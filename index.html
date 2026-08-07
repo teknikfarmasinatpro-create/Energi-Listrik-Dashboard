@@ -20,6 +20,7 @@
 <body class="p-6 md:p-10">
 
     <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Header & Tabs -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 p-6 rounded-2xl text-white shadow-lg space-y-4 md:space-y-0">
             <div class="flex items-center space-x-4">
                 <div class="bg-red-700 text-white rounded-xl h-12 w-12 flex items-center justify-center font-bold text-lg">SCS</div>
@@ -39,6 +40,7 @@
             </div>
         </div>
 
+        <!-- HALAMAN 1 -->
         <div id="page1" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="card border-t-4 border-blue-600">
@@ -103,6 +105,7 @@
             </div>
         </div>
 
+        <!-- HALAMAN 2 -->
         <div id="page2" class="space-y-6 hidden">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="card border-b-4 border-blue-600"><p class="text-xs text-gray-500 font-bold uppercase">Total Cost</p><h2 class="text-2xl font-bold text-gray-800 mt-1">Rp 9.36 M</h2></div>
@@ -129,10 +132,11 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- COMBO CHART: BIAYA VS OUTPUT -->
                 <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">3. Volatilitas & Proyeksi Tren Biaya</h3>
-                    <div class="relative h-64"><canvas id="volatilityChart"></canvas></div>
-                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Proyeksi estimasi tren pengeluaran energi bulan Agustus.</p>
+                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">3. Korelasi Biaya Listrik vs Output Produksi</h3>
+                    <div class="relative h-64"><canvas id="secComboChart"></canvas></div>
+                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik (Kiri) | Garis Hijau: Output Produksi (Kanan)</p>
                 </div>
                 <div class="card">
                     <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">4. Growth Analysis (Jan ke Jul)</h3>
@@ -202,7 +206,10 @@
         });
 
         const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
-        const monthlyTotals = [1449604593, 1398016868, 1242422612, 1234734552, 1421566808, 1319909671, 1298276204];
+        // Updated with the new July total
+        const monthlyTotals = [1449604593, 1398016868, 1242422612, 1234734552, 1421566808, 1319909671, 1298276204]; 
+        const monthlyTotalsJuta = [1450, 1398, 1242, 1235, 1422, 1320, 1298];
+        const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 65897121];
 
         new Chart(document.getElementById('trendBulanan'), {
             type: 'line',
@@ -244,30 +251,56 @@
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // --- GRAFIK PENGGANTI: VOLATILITAS & PROYEKSI BIAYA (BERBASIS DATA HISTORIS) ---
-        new Chart(document.getElementById('volatilityChart'), {
-            type: 'line',
+        new Chart(document.getElementById('secComboChart'), {
+            type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu (Proyeksi)'],
+                labels: labels,
                 datasets: [
-                    { 
-                        label: 'Aktual Total Biaya (Juta Rp)', 
-                        data: [1450, 1398, 1242, 1235, 1422, 1320, 1298, null], 
-                        borderColor: '#3b82f6', 
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        fill: true,
-                        tension: 0.3 
+                    {
+                        label: 'Total Biaya (Juta Rp)',
+                        data: monthlyTotalsJuta,
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        yAxisID: 'y',
+                        order: 2
                     },
-                    { 
-                        label: 'Proyeksi Tren (Moving Average)', 
-                        data: [null, null, null, null, null, 1320, 1298, 1285], 
-                        borderColor: '#f59e0b', 
-                        borderDash: [5, 5],
-                        tension: 0.3 
+                    {
+                        label: 'Output Produksi',
+                        data: outputProduksi,
+                        type: 'line',
+                        borderColor: '#10b981',
+                        backgroundColor: '#10b981',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        order: 1
                     }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Biaya (Juta Rp)', font: {size: 10} },
+                        grid: { color: '#e2e8f0' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Output Produksi', font: {size: 10} },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
         });
 
         new Chart(document.getElementById('anomalyChart'), {

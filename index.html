@@ -3,65 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS - Energy Control Center (Multi-Page)</title>
+    <title>SCS - Energy Control Center (Optimized 2 Pages)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
         .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); padding: 24px; }
         table { border-spacing: 0 4px; border-collapse: separate; }
-        th { letter-spacing: 0.05em; }
-        .tab-btn { transition: all 0.2s ease; }
-        .tab-active { background-color: #3b82f6 !important; color: white !important; }
-        .btn-alert { background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .tab-btn { transition: all 0.2s ease; cursor: pointer; }
+        .tab-active { background-color: #3b82f6 !important; color: white !important; border-color: #3b82f6 !important; }
     </style>
 </head>
 <body class="p-6 md:p-10">
 
     <div class="max-w-7xl mx-auto space-y-6">
-        <!-- Header & Tabs -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 p-6 rounded-2xl text-white shadow-lg space-y-4 md:space-y-0">
             <div class="flex items-center space-x-4">
                 <div class="bg-red-700 text-white rounded-xl h-12 w-12 flex items-center justify-center font-bold text-lg">SCS</div>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold leading-tight">Industrial Energy Control Center</h1>
-                    <p class="text-xs text-slate-400 mt-1">Januari – Juli 2026 · 22 Lini Produksi · Industri 4.0</p>
+                    <p class="text-xs text-slate-400 mt-1">Januari – Juli 2026 · Dashboard 2 Halaman Terintegrasi</p>
                 </div>
             </div>
             
-            <div class="flex space-x-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700">
-                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-4 py-2 text-xs font-bold rounded-lg text-slate-300">
-                    Halaman 1: Ringkasan & Heatmap
+            <div class="flex space-x-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-full md:w-auto">
+                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-5 py-2.5 text-xs font-bold rounded-lg text-slate-300 w-1/2 md:w-auto text-center border border-transparent">
+                    Hal 1: Ringkasan & Heatmap Lini
                 </button>
-                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-4 py-2 text-xs font-bold rounded-lg text-slate-300">
-                    Halaman 2: Analisis Lanjutan
+                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-5 py-2.5 text-xs font-bold rounded-lg text-slate-300 w-1/2 md:w-auto text-center border border-slate-600">
+                    Hal 2: Heatmap Gedung Candy & SBC & Analisis
                 </button>
             </div>
         </div>
 
-        <!-- HALAMAN 1 -->
         <div id="page1" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="card border-t-4 border-blue-600">
-                    <p class="text-xs text-gray-500 font-bold uppercase">Total 7 Bulan</p>
-                    <h2 class="text-2xl font-bold text-gray-900 mt-2">Rp9.36M</h2>
-                    <p class="text-xs text-gray-400 mt-1">Rata-rata Rp1.34M/bulan</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase">Total 7 Bulan (Utama)</p>
+                    <h2 id="kpiTotalCost" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
+                    <p class="text-xs text-gray-400 mt-1">Akumulasi Seluruh Lini</p>
                 </div>
                 <div class="card border-t-4 border-green-500">
                     <p class="text-xs text-gray-500 font-bold uppercase">Juli 2026</p>
-                    <h2 class="text-2xl font-bold text-gray-900 mt-2">Rp1.30M</h2>
-                    <p class="text-xs text-green-600 font-bold mt-1">-1.64% vs Jun</p>
+                    <h2 id="kpiJulCost" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
+                    <p id="kpiJulTrend" class="text-xs font-bold mt-1">-</p>
                 </div>
                 <div class="card border-t-4 border-gray-200">
-                    <p class="text-xs text-gray-500 font-bold uppercase">Tertinggi</p>
-                    <h2 class="text-2xl font-bold text-gray-900 mt-2">Rp1.45M</h2>
-                    <p class="text-xs text-gray-400 mt-1">Januari</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase">Tertinggi Bulanan</p>
+                    <h2 id="kpiHighestMonth" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
+                    <p id="kpiHighestName" class="text-xs text-gray-400 mt-1">-</p>
                 </div>
                 <div class="card border-t-4 border-gray-200">
-                    <p class="text-xs text-gray-500 font-bold uppercase">Terendah</p>
-                    <h2 class="text-2xl font-bold text-gray-900 mt-2">Rp1.23M</h2>
-                    <p class="text-xs text-gray-400 mt-1">April</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase">Terendah Bulanan</p>
+                    <h2 id="kpiLowestMonth" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
+                    <p id="kpiLowestName" class="text-xs text-gray-400 mt-1">-</p>
                 </div>
             </div>
 
@@ -76,13 +72,20 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h3 class="text-sm font-bold text-gray-800 mb-6 border-b pb-2">Tren per Lini (Top 10 Konsumen Energi)</h3>
-                <div class="relative h-96 w-full"><canvas id="trendPerLini"></canvas></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Analisis Pareto (80/20)</h3>
+                    <div class="relative h-64"><canvas id="paretoChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Korelasi Biaya Listrik vs Output Produksi</h3>
+                    <div class="relative h-64"><canvas id="secComboChart"></canvas></div>
+                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik | Garis Hijau: Output Produksi</p>
+                </div>
             </div>
 
             <div class="card overflow-x-auto">
-                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Lengkap 22 Lini Produksi (Jan - Jul 2026)</h3>
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Lengkap Lini Produksi (Jan - Jul 2026)</h3>
                 <div class="min-w-[900px]">
                     <table class="w-full text-left">
                         <thead>
@@ -105,211 +108,224 @@
             </div>
         </div>
 
-        <!-- HALAMAN 2 -->
         <div id="page2" class="space-y-6 hidden">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="card border-b-4 border-blue-600"><p class="text-xs text-gray-500 font-bold uppercase">Total Cost</p><h2 class="text-2xl font-bold text-gray-800 mt-1">Rp 9.36 M</h2></div>
-                <div class="card border-b-4 border-amber-500"><p class="text-xs text-gray-500 font-bold uppercase">Critical Lines</p><h2 class="text-2xl font-bold text-gray-800 mt-1">5 Lines</h2></div>
-                <div class="card border-b-4 border-red-500"><p class="text-xs text-gray-500 font-bold uppercase">Anomalies</p><h2 class="text-2xl font-bold text-gray-800 mt-1">2 Events</h2></div>
-                <div class="card border-b-4 border-emerald-500"><p class="text-xs text-gray-500 font-bold uppercase">Efficiency Index</p><h2 class="text-2xl font-bold text-gray-800 mt-1">92.4</h2></div>
+            <div class="card overflow-x-auto">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Konsumsi Energi: Gedung Candy & SBC (Jan - Jul 2026)</h3>
+                <div class="min-w-[900px]">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-gray-400 text-[10px] uppercase">
+                                <th class="w-8 text-center pb-2">#</th>
+                                <th class="pb-2">Nama Gedung / Fasilitas</th>
+                                <th class="text-center pb-2 w-16">JAN</th>
+                                <th class="text-center pb-2 w-16">FEB</th>
+                                <th class="text-center pb-2 w-16">MAR</th>
+                                <th class="text-center pb-2 w-16">APR</th>
+                                <th class="text-center pb-2 w-16">MEI</th>
+                                <th class="text-center pb-2 w-16">JUN</th>
+                                <th class="text-center pb-2 w-16">JUL</th>
+                                <th class="text-right pb-2 w-20">TREN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="heatmapCandySbcBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">Komparasi Tren Bulanan: Gedung Candy vs SBC</h3>
+                <div class="relative h-72"><canvas id="candySbcChart"></canvas></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">1. Analisis Pareto (80/20)</h3>
-                    <div class="relative h-64"><canvas id="paretoChart"></canvas></div>
+                <div class="card bg-gradient-to-br from-pink-50 to-white border border-pink-100">
+                    <h3 class="text-sm font-bold text-pink-800 uppercase mb-3">Evaluasi Operasional Gedung Candy</h3>
+                    <ul class="text-xs text-pink-900 space-y-2.5 list-disc pl-4 leading-relaxed">
+                        <li><strong>Konsumsi Energi Konsisten:</strong> Menunjukkan beban dasar (*base load*) operasional yang stabil setiap bulannya.</li>
+                        <li><strong>Lonjakan Maret:</strong> Puncak tertinggi mencapai **Rp291.5 Jt**, memerlukan audit pada penjadwalan mesin pendingin atau produksi masal.</li>
+                        <li><strong>Optimalisasi Mei:</strong> Penurunan drastis ke **Rp183.8 Jt** bisa dijadikan acuan *benchmark* untuk efisiensi di bulan-bulan berikutnya.</li>
+                    </ul>
                 </div>
-                <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">2. Deteksi Anomali & Instabilitas</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg border border-red-100">
-                            <div><p class="text-xs font-bold text-red-800">Utility Broad Natpro</p><p class="text-[10px] text-red-600">Spike ekstrem di Maret (+520%)</p></div>
-                            <span class="btn-alert">CHECK</span>
-                        </div>
-                    </div>
-                    <div class="relative h-36 mt-4"><canvas id="anomalyChart"></canvas></div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- COMBO CHART: BIAYA VS OUTPUT -->
-                <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">3. Korelasi Biaya Listrik vs Output Produksi</h3>
-                    <div class="relative h-64"><canvas id="secComboChart"></canvas></div>
-                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik (Kiri) | Garis Hijau: Output Produksi (Kanan)</p>
-                </div>
-                <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">4. Growth Analysis (Jan ke Jul)</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-emerald-50 rounded-xl"><p class="text-[10px] text-emerald-700 font-bold uppercase">Paling Efisien</p><p class="text-sm font-bold text-slate-800 mt-1">Softcap</p><p class="text-xl font-black text-emerald-600">-51.8%</p></div>
-                        <div class="p-4 bg-rose-50 rounded-xl"><p class="text-[10px] text-rose-700 font-bold uppercase">Paling Boros</p><p class="text-sm font-bold text-slate-800 mt-1">Utility Natpro</p><p class="text-xl font-black text-rose-600">+57.2%</p></div>
-                    </div>
+                
+                <div class="card bg-gradient-to-br from-indigo-50 to-white border border-indigo-100">
+                    <h3 class="text-sm font-bold text-indigo-800 uppercase mb-3">Evaluasi Operasional Gedung SBC</h3>
+                    <ul class="text-xs text-indigo-900 space-y-2.5 list-disc pl-4 leading-relaxed">
+                        <li><strong>Fluktuasi Tinggi (*Campaign-Based*):</strong> Pola naik-turun ekstrem menunjukkan fasilitas bekerja berdasarkan siklus pesanan (*batch production*).</li>
+                        <li><strong>Penurunan Drastis:</strong> Penurunan tajam pada Maret (**Rp161.9 Jt**) dan Mei (**Rp139.5 Jt**) mengindikasikan adanya waktu *downtime* atau pemeliharaan terencana.</li>
+                        <li><strong>Strategi Manajemen Beban:</strong> Perlu penataan ulang daya kontrak (*demand response*) pada masa *idle* untuk menghindari beban puncak penalti.</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(num) {
-            document.getElementById('page1').classList.toggle('hidden', num !== 1);
-            document.getElementById('page2').classList.toggle('hidden', num !== 2);
-            document.getElementById('btnTab1').classList.toggle('tab-active', num === 1);
-            document.getElementById('btnTab2').classList.toggle('tab-active', num === 2);
+        const charts = {};
+
+        function formatIDR(val) {
+            if (val >= 1e9) return 'Rp ' + (val / 1e9).toFixed(2) + ' B';
+            if (val >= 1e6) return 'Rp ' + (val / 1e6).toFixed(2) + ' M';
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
         }
 
-        const rawData = [
-            { name: "Liquid – Semisolid – Sachet – Kosmetik – alkes", data: [313517305, 303286493, 286537396, 347517680, 311264069, 296670978, 243373357] },
-            { name: "Obat Dalam", data: [130461272, 142462531, 88976896, 109065873, 113209722, 112799442, 105582841] },
-            { name: "Tesma", data: [126920856, 129351832, 28619119, 7763689, 96734602, 108220366, 108707700] },
-            { name: "Lab AndevQC pusat+ QC micro +Lab RPD FM1 +Office QA-GM-PPIC", data: [108029071, 99782977, 44818251, 70052844, 187518438, 88111888, 97462558] },
-            { name: "Total Office teknik+HRO+Marketing+Acc+WIC QCFM+Hydrant+WSE+UT1", data: [101677719, 88170524, 94758618, 21375905, 98527291, 103172751, 103465364] },
-            { name: "Utility Broad Farma", data: [90001410, 88824349, 66545343, 75389869, 56111932, 65039112, 84898164] },
-            { name: "Parline", data: [89591987, 71832644, 69489537, 74597395, 88968640, 103735128, 108420963] },
-            { name: "Boiler Kompresor RO", data: [70805403, 61567281, 58874771, 60568789, 69104134, 63338465, 54334429] },
-            { name: "Pilot", data: [70474212, 75529337, 28482293, 48943919, 74716974, 84458848, 76490230] },
-            { name: "Logistic + PPIC FM1", data: [54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 54059984] },
-            { name: "Office + RPD +Andev + QC gedung natpro", data: [50348004, 42442285, 48096770, 52000714, 53026987, 52220704, 50606011] },
-            { name: "Softcap", data: [49790133, 51051617, 41056149, 44267450, 24460007, 26689385, 23961935] },
-            { name: "Tablet", data: [33666180, 34097084, 32658987, 32332276, 29522341, 34238480, 36815033] },
-            { name: "Obat Luar", data: [28690511, 32300248, 32832638, 34060001, 27828581, 19176263, 18745105] },
-            { name: "Kantin + Limbah Gedung natpro", data: [27484955, 27686450, 40730232, 34712226, 32555822, 8148182, 13642598] },
-            { name: "Utility Broad Natpro , Kompresor , RO", data: [25782789, 24091560, 151388337, 96909085, 32001760, 27412190, 40537152] },
-            { name: "Aerator Limbah FM", data: [22731746, 18703597, 17777610, 23532404, 13122815, 14628839, 18798889] },
-            { name: "DATA CENTER", data: [17450438, 16201722, 17490977, 16853709, 17436768, 16946792, 17953004] },
-            { name: "Logistic +PPIC FM2", data: [16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639] },
-            { name: "Natpro Lama", data: [14293764, 14293764, 14293764, 7839819, 14293764, 16850276, 16973120] },
-            { name: "Effer", data: [4634893, 3064631, 5447360, 2731778, 7618658, 4506732, 3847204] },
-            { name: "Extraksi", data: [2889322, 2913319, 3184941, 3856504, 3180880, 3182227, 3297924] }
-        ];
-
-        // Render Heatmap Table
-        const tbody = document.getElementById('heatmapBody');
-        rawData.forEach((item, index) => {
-            let tr = document.createElement('tr');
-            tr.className = "border-b border-gray-100 hover:bg-gray-50";
-            let cells = `<td class="p-2 text-xs text-gray-500 text-center">${index + 1}</td>
-                         <td class="p-2 text-xs font-medium text-gray-700">${item.name}</td>`;
-            
-            item.data.forEach(val => {
-                let jtn = Math.round(val / 1000000);
-                let bg = val > 150000000 ? 'bg-blue-600 text-white' : (val > 100000000 ? 'bg-blue-500 text-white' : (val > 50000000 ? 'bg-blue-300 text-gray-800' : 'bg-blue-50 text-gray-800'));
-                cells += `<td class="p-1"><div class="text-center text-xs font-semibold rounded py-1 ${bg}">${jtn}Jt</div></td>`;
-            });
-            
-            let first = item.data[0], last = item.data[6];
-            let trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
-            let tColor = trend < 0 ? 'text-green-600' : (trend > 0 ? 'text-red-600' : 'text-gray-500');
-            cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
-            
-            tr.innerHTML = cells;
-            tbody.appendChild(tr);
-        });
-
-        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
-        // Updated with the new July total
-        const monthlyTotals = [1449604593, 1398016868, 1242422612, 1234734552, 1421566808, 1319909671, 1298276204]; 
-        const monthlyTotalsJuta = [1450, 1398, 1242, 1235, 1422, 1320, 1298];
-        const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 65897121];
-
-        new Chart(document.getElementById('trendBulanan'), {
-            type: 'line',
-            data: { labels: labels, datasets: [{ data: monthlyTotals, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
-
-        new Chart(document.getElementById('komposisiPie'), {
-            type: 'doughnut',
-            data: {
-                labels: ["Liquid", "Obat Dalam", "Lab Andev", "Office", "Parline", "Lainnya"],
-                datasets: [{ data: [2102167278, 802558577, 695776027, 611148172, 606636294, 4546245060], backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#cbd5e1'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { boxWidth: 10 } } } }
-        });
-
-        const colorPalette = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#6366f1', '#f97316'];
-        const top10Datasets = rawData.slice(0, 10).map((item, index) => ({
-            label: item.name.length > 25 ? item.name.substring(0, 25) + '...' : item.name,
-            data: item.data,
-            borderColor: colorPalette[index],
-            tension: 0.3,
-            borderWidth: 2,
-            pointRadius: 3
-        }));
-
-        new Chart(document.getElementById('trendPerLini'), {
-            type: 'line',
-            data: { labels: labels, datasets: top10Datasets },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
-        });
-
-        new Chart(document.getElementById('paretoChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Liquid', 'Obat Dalam', 'Lab Andev', 'Office', 'Parline'],
-                datasets: [{ label: 'Cost', data: [2102, 802, 695, 611, 606], backgroundColor: '#3b82f6' }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-
-        new Chart(document.getElementById('secComboChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Total Biaya (Juta Rp)',
-                        data: monthlyTotalsJuta,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        yAxisID: 'y',
-                        order: 2
-                    },
-                    {
-                        label: 'Output Produksi',
-                        data: outputProduksi,
-                        type: 'line',
-                        borderColor: '#10b981',
-                        backgroundColor: '#10b981',
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        tension: 0.3,
-                        yAxisID: 'y1',
-                        order: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: { display: true, text: 'Biaya (Juta Rp)', font: {size: 10} },
-                        grid: { color: '#e2e8f0' }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: { display: true, text: 'Output Produksi', font: {size: 10} },
-                        grid: { drawOnChartArea: false }
-                    }
+        function switchTab(num) {
+            for (let i = 1; i <= 2; i++) {
+                const page = document.getElementById('page' + i);
+                const btn = document.getElementById('btnTab' + i);
+                if (!page || !btn) continue;
+                if (i === num) {
+                    page.classList.remove('hidden');
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('border-slate-600');
+                } else {
+                    page.classList.add('hidden');
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('border-slate-600');
                 }
             }
-        });
+            setTimeout(() => {
+                Object.values(charts).forEach(chart => {
+                    if (chart && typeof chart.resize === 'function') chart.resize();
+                });
+            }, 50);
+        }
 
-        new Chart(document.getElementById('anomalyChart'), {
-            type: 'radar',
-            data: {
-                labels: ['Utility Natpro', 'Lab Andev', 'Liquid', 'Boiler', 'Parline'],
-                datasets: [{ data: [90, 42, 12, 15, 18], fill: true, backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444' }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        window.addEventListener('DOMContentLoaded', () => {
+            const rawData = [
+                { name: "Parlin", data: [89591987, 71832644, 69489537, 74597395, 88968640, 103735128, 108420963] },
+                { name: "Softcap", data: [49790133, 51051617, 41056149, 44267450, 24460007, 26689385, 23961935] },
+                { name: "Tesma", data: [126920856, 129351832, 28619119, 7763689, 96734602, 108220366, 108707700] },
+                { name: "Pilot", data: [70474212, 75529337, 28482293, 48943919, 74716974, 84458848, 76490230] },
+                { name: "Boiler Kompresor RO", data: [70805403, 61567281, 58874771, 60568789, 69104134, 63338465, 54334429] },
+                { name: "Utility Broad Farma", data: [90001410, 88824349, 66545343, 75389869, 56111932, 65039112, 84898164] },
+                { name: "Tablet", data: [33666180, 34097084, 32658987, 32332276, 29522341, 34238480, 36815033] },
+                { name: "Effer", data: [4634893, 3064631, 5447360, 2731778, 7618658, 4506732, 3847204] },
+                { name: "Liquid – Semisolid – Sachet – Kosmetik – alkes", data: [313517305, 303286493, 286537396, 347517680, 311264069, 296670978, 243373357] },
+                { name: "Obat Dalam", data: [130461272, 142462531, 88976896, 109065873, 113209722, 112799442, 105582841] },
+                { name: "Obat Luar", data: [28690511, 32300248, 32832638, 34060001, 27828581, 19176263, 18745105] },
+                { name: "Extraksi", data: [2889322, 2913319, 3184941, 3856504, 3180880, 3182227, 3297924] },
+                { name: "Office + RPD +Andev + QC gedung natpro", data: [50348004, 42442285, 48096770, 52000714, 53026987, 52220704, 50606011] },
+                { name: "Kantin + Limbah Gedung natpro", data: [27484955, 27686450, 40730232, 34712226, 32555822, 8148182, 13642598] },
+                { name: "Utility Broad Natpro , Kompresor , RO", data: [25782789, 24091560, 151388337, 96909085, 32001760, 27412190, 40537152] },
+                { name: "Natpro Lama", data: [14293764, 14293764, 14293764, 7839819, 14293764, 16850276, 16973120] },
+                { name: "Logistic + PPIC FM1", data: [54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 54059984] },
+                { name: "Logistic +PPIC FM2", data: [16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639] },
+                { name: "Total Office teknik+HRO+Marketing+Acc+WIC", data: [101677719, 88170524, 94758618, 21375905, 98527291, 103172751, 103465364] },
+                { name: "DATA CENTER", data: [17450438, 16201722, 17490977, 16853709, 17436768, 16946792, 17953004] },
+                { name: "Lab AndevQC pusat + QC micro", data: [108029071, 99782977, 44818251, 70052844, 187518438, 88111888, 97462558] },
+                { name: "Aerator Limbah FM", data: [22731746, 18703597, 17777610, 23532404, 13122815, 14628839, 18798889] }
+            ];
+
+            const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 65897121];
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
+
+            let monthlyTotals = [0,0,0,0,0,0,0];
+            rawData.forEach(item => {
+                item.data.forEach((val, idx) => { monthlyTotals[idx] += val; });
+            });
+
+            const totalSum = monthlyTotals.reduce((a, b) => a + b, 0);
+            const maxVal = Math.max(...monthlyTotals);
+            const minVal = Math.min(...monthlyTotals);
+            const maxIdx = monthlyTotals.indexOf(maxVal);
+            const minIdx = monthlyTotals.indexOf(minVal);
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli'];
+
+            document.getElementById('kpiTotalCost').innerText = formatIDR(totalSum);
+            document.getElementById('kpiJulCost').innerText = formatIDR(monthlyTotals[6]);
+            
+            let julDiff = ((monthlyTotals[6] - monthlyTotals[5]) / monthlyTotals[5]) * 100;
+            let julTrendEl = document.getElementById('kpiJulTrend');
+            julTrendEl.innerText = (julDiff >= 0 ? '+' : '') + julDiff.toFixed(2) + '% vs Jun';
+            julTrendEl.className = 'text-xs font-bold mt-1 ' + (julDiff <= 0 ? 'text-green-600' : 'text-red-600');
+
+            document.getElementById('kpiHighestMonth').innerText = formatIDR(maxVal);
+            document.getElementById('kpiHighestName').innerText = monthNames[maxIdx];
+            document.getElementById('kpiLowestMonth').innerText = formatIDR(minVal);
+            document.getElementById('kpiLowestName').innerText = monthNames[minIdx];
+
+            // Render Heatmap Lini Utama
+            const tbody = document.getElementById('heatmapBody');
+            if (tbody) {
+                rawData.forEach((item, index) => {
+                    let tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-100 hover:bg-gray-50";
+                    let cells = `<td class="p-2 text-xs text-gray-500 text-center">${index + 1}</td>
+                                 <td class="p-2 text-xs font-medium text-gray-700">${item.name}</td>`;
+                    item.data.forEach(val => {
+                        let jtn = Math.round(val / 1000000);
+                        let bg = val > 150000000 ? 'bg-blue-600 text-white' : (val > 100000000 ? 'bg-blue-500 text-white' : (val > 50000000 ? 'bg-blue-300 text-gray-800' : 'bg-blue-50 text-gray-800'));
+                        cells += `<td class="p-1"><div class="text-center text-xs font-semibold rounded py-1 ${bg}">${jtn}Jt</div></td>`;
+                    });
+                    let first = item.data[0], last = item.data[6];
+                    let trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
+                    let tColor = trend < 0 ? 'text-green-600' : (trend > 0 ? 'text-red-600' : 'text-gray-500');
+                    cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
+                    tr.innerHTML = cells;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            const monthlyTotalsJuta = monthlyTotals.map(v => Math.round(v / 1000000));
+
+            charts.c1 = new Chart(document.getElementById('trendBulanan'), { type: 'line', data: { labels: labels, datasets: [{ data: monthlyTotals, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            
+            charts.c2 = new Chart(document.getElementById('komposisiPie'), { type: 'doughnut', data: { labels: ["Liquid", "Obat Dalam", "Lab Andev", "Office", "Parlin", "Lainnya"], datasets: [{ data: [2102167278, 802558577, 695776027, 611148172, 606636294, 4546245060], backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#cbd5e1'] }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { boxWidth: 10 } } } } });
+
+            charts.c4 = new Chart(document.getElementById('paretoChart'), { type: 'bar', data: { labels: ['Liquid', 'Obat Dalam', 'Lab Andev', 'Office', 'Parlin'], datasets: [{ label: 'Cost', data: [2102, 802, 695, 611, 606], backgroundColor: '#3b82f6' }] }, options: { responsive: true, maintainAspectRatio: false } });
+            
+            charts.c5 = new Chart(document.getElementById('secComboChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Total Biaya (Juta Rp)', data: monthlyTotalsJuta, backgroundColor: 'rgba(59, 130, 246, 0.8)', yAxisID: 'y', order: 2 },
+                        { label: 'Output Produksi', data: outputProduksi, type: 'line', borderColor: '#10b981', backgroundColor: '#10b981', borderWidth: 3, pointRadius: 4, tension: 0.3, yAxisID: 'y1', order: 1 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }, scales: { y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Biaya (Juta Rp)', font: {size: 10} }, grid: { color: '#e2e8f0' } }, y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Output Produksi', font: {size: 10} }, grid: { drawOnChartArea: false } } } }
+            });
+
+            // Data & Heatmap Gedung Candy & SBC (Jan - Jul)
+            const dataCandy = [251362485, 236953776, 291550114, 233441235, 183846137, 218596417, 225000000];
+            const dataSbc = [253778070, 276430838, 161929134, 253800592, 139504096, 204164967, 215000000];
+
+            const candySbcRows = [
+                { name: "Gedung Candy", data: dataCandy, color: 'bg-pink-100 text-pink-800' },
+                { name: "Gedung SBC", data: dataSbc, color: 'bg-indigo-100 text-indigo-800' }
+            ];
+
+            const tbodyCandySbc = document.getElementById('heatmapCandySbcBody');
+            if (tbodyCandySbc) {
+                candySbcRows.forEach((item, index) => {
+                    let tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-100 hover:bg-gray-50";
+                    let cells = `<td class="p-2 text-xs text-gray-500 text-center">${index + 1}</td>
+                                 <td class="p-2 text-xs font-bold text-gray-800">${item.name}</td>`;
+                    item.data.forEach(val => {
+                        let jtn = Math.round(val / 1000000);
+                        cells += `<td class="p-1"><div class="text-center text-xs font-semibold rounded py-1 ${item.color}">${jtn}Jt</div></td>`;
+                    });
+                    let first = item.data[0], last = item.data[6];
+                    let trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
+                    let tColor = trend < 0 ? 'text-green-600' : (trend > 0 ? 'text-red-600' : 'text-gray-500');
+                    cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
+                    tr.innerHTML = cells;
+                    tbodyCandySbc.appendChild(tr);
+                });
+            }
+
+            charts.c7 = new Chart(document.getElementById('candySbcChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Gedung Candy', data: dataCandy, borderColor: '#ec4899', backgroundColor: 'rgba(236, 72, 153, 0.1)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#ec4899', tension: 0.3, fill: true },
+                        { label: 'Gedung SBC', data: dataSbc, borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.1)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#6366f1', tension: 0.3, fill: true }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) label += ': '; if (context.parsed.y !== null) { label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y); } return label; } } } }, scales: { y: { ticks: { callback: function(value) { return 'Rp ' + (value/1000000) + ' Jt'; } } } } }
+            });
         });
     </script>
 </body>

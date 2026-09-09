@@ -261,14 +261,14 @@
                     <div class="bg-white p-5 rounded-xl border border-pink-100 shadow-sm space-y-3">
                         <div class="flex items-center justify-between">
                             <h4 class="text-sm font-bold text-pink-900">🏢 Gedung Candy</h4>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-700 font-bold text-[10px] rounded-full">✓ Stabil Agustus: -0,2%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 font-bold text-[10px] rounded-full">✓ Turun Agustus: -13,5%</span>
                         </div>
                         <div class="space-y-2 text-xs text-slate-600 leading-relaxed text-justify">
                             <p>
-                                <strong>Diagnostik Kinerja:</strong> Konsumsi energi Gedung Candy di bulan Agustus 2026 tercatat <strong>Rp 249,46 Juta</strong>, hampir flat dibanding Juli (Rp 249,96 Jt / -0,2%). Meskipun masih berada di level tinggi (mendekati puncak Maret Rp 291,55 Jt), lonjakan tajam yang terjadi di Juli berhasil dihentikan.
+                                <strong>Diagnostik Kinerja:</strong> Konsumsi energi Gedung Candy di bulan Agustus 2026 tercatat <strong>Rp 216,22 Juta</strong>, turun signifikan <strong>-13,5%</strong> dibanding Juli (Rp 249,96 Jt). Penurunan ini membawa beban kembali ke rentang yang lebih terkendali setelah lonjakan Juli.
                             </p>
                             <p>
-                                <strong>Catatan:</strong> Sebagai gedung produksi konfeksioneri yang sensitif terhadap kelembapan & suhu, beban Chiller/AHU masih menjadi cost driver utama. Perlu terus dimonitor terutama memasuki musim kemarau lanjutan.
+                                <strong>Catatan:</strong> Sebagai gedung produksi konfeksioneri yang sensitif terhadap kelembapan & suhu, beban Chiller/AHU tetap cost driver utama. Pertahankan praktik operasional yang berhasil menekan konsumsi di Agustus.
                             </p>
                         </div>
                     </div>
@@ -472,11 +472,11 @@
         window.addEventListener('DOMContentLoaded', () => {
             // Data Lini Utama Ter-update (Jan - Agu 2026)
             const rawData = [
-                { name: "Parline", data: [89591987, 71832644, 69489537, 74597395, 88968640, 103735128, 108420963, 69169322] },
-                { name: "Softcap", data: [49790133, 51051617, 41056149, 44267450, 24460007, 26689385, 23961935, 20736329] },
+                { name: "Parline", data: [89591987, 71832644, 69489537, 74597395, 88968640, 103735128, 108420963, 69368088] },
+                { name: "Softcap", data: [49790133, 51051617, 41056149, 44267450, 24460007, 26689385, 23961935, 20780258] },
                 { name: "Tesma", data: [126920856, 129351832, 28619119, 7763689, 96734602, 108220366, 108707700, 64553711] },
-                { name: "Pilot", data: [70474212, 75529337, 28482293, 48943919, 74716974, 84458848, 76490230, 65867312] },
-                { name: "Boiler Kompresor RO", data: [70805403, 61567281, 58874771, 60568789, 69104134, 63338465, 54334429, 57970610] },
+                { name: "Pilot", data: [70474212, 75529337, 28482293, 48943919, 74716974, 84458848, 76490230, 66007540] },
+                { name: "Boiler Kompresor RO", data: [70805403, 61567281, 58874771, 60568789, 69104134, 63338465, 54334429, 58070220] },
                 { name: "Utility Broad Farma", data: [90001410, 88824349, 66545343, 75389869, 56111932, 65039112, 84898164, 84014187] },
                 { name: "Tablet", data: [33666180, 34097084, 32658987, 32332276, 29522341, 34238480, 36815033, 31084542] },
                 { name: "Effer", data: [4634893, 3064631, 5447360, 2731778, 7618658, 4506732, 3847204, 7567039] },
@@ -488,12 +488,12 @@
                 { name: "Kantin + Limbah Gedung natpro", data: [27484955, 27686450, 40730232, 34712226, 32555822, 8148182, 13642598, 32052752] },
                 { name: "Utility Broad Natpro , Kompresor , RO", data: [25782789, 24091560, 151388337, 96909085, 32001760, 27412190, 40537152, 31960236] },
                 { name: "Natpro Lama", data: [14293764, 14293764, 14293764, 7839819, 14293764, 16850276, 16973120, 20039235] },
-                { name: "Logistic + PPIC FM1", data: [54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 41261680] },
+                { name: "Logistic + PPIC FM1", data: [54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 41360787] },
                 { name: "Logistic +PPIC FM2", data: [16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639] },
                 { name: "Total Office teknik+HRO+Marketing+Acc+WIC QCFM+Hydrant+WSE+U T1", data: [101677719, 88170524, 94758618, 21375905, 98527291, 103172751, 103465364, 115113676] },
-                { name: "DATA CENTER", data: [17450438, 16201722, 17490977, 16853709, 17436768, 16946792, 17953004, 13358244] },
-                { name: "Lab AndevQC pusat+ QC micro +Lab RPD FM1 +Office QA-GM-PPIC", data: [108029071, 99782977, 44818251, 70052844, 187518438, 88111888, 87314264, 70608947] },
-                { name: "Aerator Limbah FM", data: [22731746, 18703597, 17777610, 23532404, 13122815, 14628839, 18798889, 7449060] }
+                { name: "DATA CENTER", data: [17450438, 16201722, 17490977, 16853709, 17436768, 16946792, 17953004, 13391157] },
+                { name: "Lab AndevQC pusat+ QC micro +Lab RPD FM1 +Office QA-GM-PPIC", data: [108029071, 99782977, 44818251, 70052844, 187518438, 88111888, 87314264, 69959931] },
+                { name: "Aerator Limbah FM", data: [22731746, 18703597, 17777610, 23532404, 13122815, 14628839, 18798889, 7483523] }
             ];
 
             // Output produksi hanya tersedia s/d Juli
@@ -743,7 +743,7 @@
             });
 
             // Data Gedung Candy & SBC (Jan - Agu 2026)
-            const dataCandy = [251362485, 236953776, 291550114, 233441235, 183846137, 218596417, 249960172, 249462196];
+            const dataCandy = [251362485, 236953776, 291550114, 233441235, 183846137, 218596417, 249960172, 216221710];
             const dataSbc = [253778070, 276430838, 161929134, 253800592, 139504096, 204164967, 240214675, 222783588];
 
             const candySbcRows = [

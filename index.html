@@ -62,14 +62,17 @@
             </div>
             
             <div class="flex flex-wrap gap-1 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-full md:w-auto">
-                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-transparent">
-                    Hal 1: Ringkasan & Lini
+                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-transparent">
+                    Hal 1: Ringkasan
                 </button>
-                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
+                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
                     Hal 2: Candy & SBC
                 </button>
-                <button onclick="switchTab(3)" id="btnTab3" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
-                    Hal 3: Solar Panel
+                <button onclick="switchTab(3)" id="btnTab3" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
+                    Hal 3: Solar
+                </button>
+                <button onclick="switchTab(4)" id="btnTab4" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
+                    Hal 4: Energi/Unit
                 </button>
                 <button onclick="handleLogout()" class="px-3 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-600 transition-colors" title="Keluar">
                     Logout
@@ -387,6 +390,119 @@
                 </div>
             </div>
         </div>
+
+        <div id="page4" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="card border-t-4 border-violet-600">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Energy Cost 8 Bulan</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="kpiEnTotal">-</h2>
+                    <p class="text-xs text-gray-400 mt-1">Semua SEU (listrik+batu bara+gas+diesel)</p>
+                </div>
+                <div class="card border-t-4 border-fuchsia-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Cost/Unit Agustus</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="kpiEnAugCpu">-</h2>
+                    <p class="text-xs text-gray-400 mt-1" id="kpiEnAugTrend">vs Juli</p>
+                </div>
+                <div class="card border-t-4 border-orange-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Cost/Unit Terbaik (Juli)</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="kpiEnBest">-</h2>
+                    <p class="text-xs text-gray-400 mt-1">Rata-rata seluruh SEU</p>
+                </div>
+                <div class="card border-t-4 border-rose-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">SEU Tertinggi Agustus</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2">Natpro</h2>
+                    <p class="text-xs text-gray-400 mt-1">Rp 500 / unit</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Biaya Energi per Unit Produk (Rp/unit) — per SEU</h3>
+                    <div class="relative h-80 w-full"><canvas id="energyCpuChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Total Energy Used (TOE) — per Bulan per Lini Produksi</h3>
+                    <div class="relative h-80 w-full"><canvas id="energyToeChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card overflow-x-auto">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Matriks Total Energy Used (TOE) — Jan s/d Agu 2026</h3>
+                <div class="min-w-[900px]">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="text-gray-400 text-[10px] uppercase border-b">
+                                <th class="pb-2 pr-2">SEU</th>
+                                <th class="text-center pb-2 w-16">JAN</th>
+                                <th class="text-center pb-2 w-16">FEB</th>
+                                <th class="text-center pb-2 w-16">MAR</th>
+                                <th class="text-center pb-2 w-16">APR</th>
+                                <th class="text-center pb-2 w-16">MEI</th>
+                                <th class="text-center pb-2 w-16">JUN</th>
+                                <th class="text-center pb-2 w-16">JUL</th>
+                                <th class="text-center pb-2 w-16">AGU</th>
+                                <th class="text-right pb-2 w-20">Δ JUL→AGU</th>
+                            </tr>
+                        </thead>
+                        <tbody id="energyCpuBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card bg-slate-50 border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="p-2 bg-violet-600 text-white rounded-lg text-xs font-bold">ANALISIS ENERGI</span>
+                        <h3 class="text-base font-bold text-slate-900">Apr–Mei (6 Hari Kerja) vs Jul–Agu (5 Hari Kerja)</h3>
+                    </div>
+                    <span class="text-xs text-slate-500">Fokus: mengapa TOE naik meski hari kerja berkurang</span>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3">
+                    <h4 class="text-sm font-bold text-slate-800">1. Fakta perbandingan</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        April–Mei beroperasi dengan pola <strong>6 hari kerja per minggu</strong>, sementara Juli–Agustus hanya <strong>5 hari kerja</strong>. Dengan hari operasional yang lebih sedikit, secara logika total energi yang dipakai seharusnya menurun. Kenyataannya sebaliknya: akumulasi TOE seluruh SEU naik dari <strong>892 TOE (Apr+Mei)</strong> menjadi <strong>1.268 TOE (Jul+Agu)</strong>, atau sekitar <strong>+42%</strong>.
+                    </p>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        Kenaikan merata di hampir semua lini — antara lain Pharma 1 (rata-rata ~130 → ~190 TOE), Candy (~82 → ~118), Natpro (~84 → ~115), dan Pharma 2 (~75 → ~106). Ini menandakan masalahnya bukan “lebih banyak produksi karena lebih banyak hari”, melainkan <strong>intensitas energi per aktivitas yang memburuk</strong>.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3">
+                    <h4 class="text-sm font-bold text-slate-800">2. Penyebab utama: krisis batu bara (kalori rendah)</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        Pemicu terbesar adalah <strong>krisis pasokan batu bara</strong>. Kualitas batu bara yang diterima cenderung <strong>kalori lebih rendah</strong>, sehingga untuk menghasilkan uap/energi termal yang sama, volume yang harus dibakar menjadi jauh lebih besar. Akibatnya angka TOE dan biaya energi ikut naik, meski output produksi tidak selalu sejalan.
+                    </p>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        Ketika boiler batu bara tidak mampu menyuplai kebutuhan secara stabil, operasional beralih ke <strong>diesel</strong> sebagai pengganti. Pemakaian diesel terlihat naik — contohnya di SBC, dari kisaran 3.000–11.000 liter di bulan-bulan sebelumnya menjadi <strong>16.000 liter di Agustus</strong>. Diesel menutup gap energi boiler, tetapi harganya mahal dan mendorong total energy cost serta TOE naik.
+                    </p>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        Di sisi pendinginan, chiller absorbsi (yang mengandalkan uap dari boiler) sempat tidak optimal, sehingga digantikan <strong>chiller elektrik</strong>. Ini menambah beban listrik PLN, meskipun sebagian sudah diimbangi solar panel 1.125 kWp yang beroperasi sejak 28 Juli.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3">
+                    <h4 class="text-sm font-bold text-slate-800">3. Dampak ke cost per unit &amp; SEU kritis</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        Karena lebih banyak bahan bakar (batu bara kalori rendah + diesel) dipakai untuk output yang tidak selalu lebih tinggi, <strong>biaya energi per unit produk ikut memburuk</strong>. Rata-rata cost/unit seluruh SEU naik dari titik terbaik Juli (~Rp 42/unit) ke Agustus (~Rp 68/unit).
+                    </p>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                        SEU yang paling perlu perhatian: <strong>Natpro</strong> (cost/unit Agustus ~Rp 500), <strong>Pharma 1</strong> (naik paling tajam secara persentase, seiring lonjakan batu bara dan listrik), serta <strong>Candy</strong> dan <strong>SBC</strong> yang juga mencatat kenaikan signifikan.
+                    </p>
+                </div>
+
+                <div class="bg-violet-950 text-white p-5 rounded-xl space-y-3">
+                    <h4 class="text-xs font-bold text-violet-300 uppercase tracking-wider">4. Kesimpulan &amp; arahan tindak lanjut</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300">
+                        <div class="flex items-start gap-2"><span class="text-violet-400 font-bold">•</span><span>Kenaikan TOE Jul–Agu <strong>bukan karena lebih banyak hari kerja</strong> (justru 5 HK vs 6 HK di Apr–Mei), melainkan kualitas batu bara menurun + substitusi diesel.</span></div>
+                        <div class="flex items-start gap-2"><span class="text-violet-400 font-bold">•</span><span>Amankan pasokan <strong>batu bara kalori tinggi</strong> dan batasi ketergantungan diesel untuk boiler.</span></div>
+                        <div class="flex items-start gap-2"><span class="text-violet-400 font-bold">•</span><span>Maksimalkan solar 1.125 kWp untuk menekan porsi listrik PLN, terutama saat chiller elektrik aktif.</span></div>
+                        <div class="flex items-start gap-2"><span class="text-violet-400 font-bold">•</span><span>Audit fokus Pharma 1, Natpro, Candy, dan SBC; tetapkan target TOE &amp; cost/unit berbasis baseline Juli (pola 5 HK).</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -448,7 +564,7 @@
         }
 
         function switchTab(num) {
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const page = document.getElementById('page' + i);
                 const btn = document.getElementById('btnTab' + i);
                 if (!page || !btn) continue;
@@ -893,6 +1009,160 @@
                     }
                 }
             });
+
+            // ========== ENERGY PER UNIT (Hal 4) ==========
+            const energySEU = {
+                'Candy': {
+                    output: [9892088,8978838,6850960,7333364,6042335,7108378,8202218,6703173],
+                    cost: [419931156,477143733,461079896,374056548,382190981,424864467,471031202,584860160],
+                    toe: [81,107,86,75,90,92,93,144]
+                },
+                'SBC': {
+                    output: [12182737,12029797,5687533,4934333,3390355,1862301,12214992,8420309],
+                    cost: [665787362,708267519,419772266,517782844,407318254,429844719,654420544,663925857],
+                    toe: [51,54,33,42,24,32,47,55]
+                },
+                'Natpro': {
+                    output: [1134286,1412744,898610,1066317,942480,930900,1569686,1124246],
+                    cost: [440745266,518839611,447286756,467019194,467758159,451287210,473647777,562177349],
+                    toe: [81,108,81,75,92,93,92,138]
+                },
+                'Pharma 1': {
+                    output: [23358074,14823559,8943360,16461755,22518924,25768654,32361908,22620808],
+                    cost: [605685576,661097849,461160654,586439122,624593636,604112931,651385705,1026841171],
+                    toe: [123,160,111,116,145,140,141,238]
+                },
+                'Pharma 2': {
+                    output: [4440102,6575354,3013089,2764476,5754796,7583401,5658512,6129920],
+                    cost: [307789979,368678585,303680543,396308550,297275026,334417924,353187152,456442851],
+                    toe: [71,100,73,68,82,86,81,131]
+                },
+                'Pharma 3': {
+                    output: [13641612,12555813,10317800,14691326,10839256,11879230,10787297,10110723],
+                    cost: [390335421,394429215,354840232,346149663,374404486,376563972,366936428,475367251],
+                    toe: [43,50,41,38,45,46,44,64]
+                }
+            };
+
+            const seuNames = Object.keys(energySEU);
+            const seuColors = {
+                'Candy': '#db2777',
+                'SBC': '#4f46e5',
+                'Natpro': '#ea580c',
+                'Pharma 1': '#2563eb',
+                'Pharma 2': '#0891b2',
+                'Pharma 3': '#16a34a'
+            };
+
+            const energyCpu = {};
+            seuNames.forEach(s => {
+                energyCpu[s] = energySEU[s].cost.map((c, i) => {
+                    const o = energySEU[s].output[i];
+                    return o > 0 ? +(c / o).toFixed(2) : null;
+                });
+            });
+
+            // KPIs
+            let totalEnCost = 0;
+            let monthCost = [0,0,0,0,0,0,0,0];
+            let monthOut = [0,0,0,0,0,0,0,0];
+            seuNames.forEach(s => {
+                energySEU[s].cost.forEach((c, i) => { monthCost[i] += c; totalEnCost += c; });
+                energySEU[s].output.forEach((o, i) => { monthOut[i] += o; });
+            });
+            const monthCpu = monthCost.map((c, i) => monthOut[i] > 0 ? c / monthOut[i] : 0);
+            document.getElementById('kpiEnTotal').innerText = formatIDR(totalEnCost);
+            document.getElementById('kpiEnAugCpu').innerText = 'Rp ' + monthCpu[7].toFixed(2);
+            const cpuDiff = ((monthCpu[7] - monthCpu[6]) / monthCpu[6]) * 100;
+            const trEl = document.getElementById('kpiEnAugTrend');
+            trEl.innerText = (cpuDiff >= 0 ? '+' : '') + cpuDiff.toFixed(1) + '% vs Juli';
+            trEl.className = 'text-xs font-bold mt-1 ' + (cpuDiff <= 0 ? 'text-green-600' : 'text-red-600');
+            document.getElementById('kpiEnBest').innerText = 'Rp ' + monthCpu[6].toFixed(2);
+
+            // Table — Total Energy Used (TOE)
+            const enBody = document.getElementById('energyCpuBody');
+            if (enBody) {
+                seuNames.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-gray-100 hover:bg-gray-50';
+                    let cells = `<td class="py-2 pr-2 font-semibold text-gray-700">${s}</td>`;
+                    energySEU[s].toe.forEach(v => {
+                        const bg = v >= 150 ? 'bg-red-100 text-red-800' : (v >= 100 ? 'bg-amber-100 text-amber-800' : (v >= 70 ? 'bg-yellow-50 text-gray-800' : 'bg-green-50 text-green-800'));
+                        cells += `<td class="p-1"><div class="text-center text-[11px] font-bold rounded py-1 ${bg}">${v}</div></td>`;
+                    });
+                    const dlt = energySEU[s].toe[6] > 0 ? ((energySEU[s].toe[7] - energySEU[s].toe[6]) / energySEU[s].toe[6] * 100) : 0;
+                    const dColor = dlt > 0 ? 'text-red-600' : 'text-green-600';
+                    cells += `<td class="py-2 text-right font-bold ${dColor}">${dlt > 0 ? '+' : ''}${Math.round(dlt)}%</td>`;
+                    tr.innerHTML = cells;
+                    enBody.appendChild(tr);
+                });
+            }
+
+            // Line chart cost/unit
+            charts.energyCpu = new Chart(document.getElementById('energyCpuChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: seuNames.map(s => ({
+                        label: s,
+                        data: energyCpu[s],
+                        borderColor: seuColors[s],
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        tension: 0.25
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Rp / unit', font: { size: 10 } },
+                            grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
+            });
+
+            // Total Energy Used (TOE) per bulan per lini — line chart
+            charts.energyToe = new Chart(document.getElementById('energyToeChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: seuNames.map(s => ({
+                        label: s,
+                        data: energySEU[s].toe,
+                        borderColor: seuColors[s],
+                        backgroundColor: 'transparent',
+                        borderWidth: 2.5,
+                        pointRadius: 4,
+                        pointBackgroundColor: seuColors[s],
+                        tension: 0.3
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' TOE'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Bulan', font: { size: 10 } } },
+                        y: {
+                            title: { display: true, text: 'Total Energy Used (TOE)', font: { size: 10 } },
+                            grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
+            });
+
         });
     </script>
 </body>

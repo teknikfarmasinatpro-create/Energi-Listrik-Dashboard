@@ -17,7 +17,41 @@
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-7xl mx-auto space-y-6">
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 p-4">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-slate-900 px-8 py-6 text-center">
+                <div class="mx-auto bg-red-700 text-white rounded-xl h-14 w-14 flex items-center justify-center font-bold text-xl mb-3">SCS</div>
+                <h1 class="text-xl font-bold text-white">Energy Control Center</h1>
+                <p class="text-xs text-slate-400 mt-1">Silakan login untuk mengakses dashboard</p>
+            </div>
+            <form id="loginForm" class="px-8 py-8 space-y-5" onsubmit="return handleLogin(event)">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">Username</label>
+                    <input type="text" id="loginUser" autocomplete="username"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Masukkan username" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">Password</label>
+                    <input type="password" id="loginPass" autocomplete="current-password"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Masukkan password" required>
+                </div>
+                <p id="loginError" class="text-xs text-red-600 font-medium hidden">Username atau password salah.</p>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3 rounded-xl transition-colors shadow-lg shadow-blue-600/20">
+                    Masuk
+                </button>
+            </form>
+            <div class="px-8 pb-6 text-center">
+                <p class="text-[10px] text-gray-400">SCS Industrial Energy Control Center · 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD (hidden until login) -->
+    <div id="dashboardRoot" class="max-w-7xl mx-auto space-y-6 hidden">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 p-6 rounded-2xl text-white shadow-lg space-y-4 md:space-y-0">
             <div class="flex items-center space-x-4">
                 <div class="bg-red-700 text-white rounded-xl h-12 w-12 flex items-center justify-center font-bold text-lg">SCS</div>
@@ -36,6 +70,9 @@
                 </button>
                 <button onclick="switchTab(3)" id="btnTab3" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
                     Hal 3: Solar Panel
+                </button>
+                <button onclick="handleLogout()" class="px-3 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-600 transition-colors" title="Keluar">
+                    Logout
                 </button>
             </div>
         </div>
@@ -353,6 +390,55 @@
     </div>
 
     <script>
+        // ===== AUTH =====
+        const AUTH_USER = 'admin';
+        const AUTH_PASS = 'admin';
+        const AUTH_KEY = 'scs_ecc_auth';
+
+        function isLoggedIn() {
+            return sessionStorage.getItem(AUTH_KEY) === '1';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value;
+            const err = document.getElementById('loginError');
+            if (u === AUTH_USER && p === AUTH_PASS) {
+                sessionStorage.setItem(AUTH_KEY, '1');
+                showDashboard();
+                err.classList.add('hidden');
+            } else {
+                err.classList.remove('hidden');
+            }
+            return false;
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem(AUTH_KEY);
+            document.getElementById('dashboardRoot').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboardRoot').classList.remove('hidden');
+            // resize charts after show
+            setTimeout(() => {
+                if (typeof charts !== 'undefined') {
+                    Object.values(charts).forEach(c => { if (c && c.resize) c.resize(); });
+                }
+            }, 100);
+        }
+
+        // Gate on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (isLoggedIn()) showDashboard();
+        });
+
         const charts = {};
 
         function formatIDR(val) {

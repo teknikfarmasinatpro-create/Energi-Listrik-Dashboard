@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS - Energy Control Center (Update Juli 2026)</title>
+    <title>SCS - Energy Control Center (Update Agustus 2026)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,16 +23,19 @@
                 <div class="bg-red-700 text-white rounded-xl h-12 w-12 flex items-center justify-center font-bold text-lg">SCS</div>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold leading-tight">Industrial Energy Control Center</h1>
-                    <p class="text-xs text-slate-400 mt-1">Laporan Operasional & Evaluasi Konsumsi Energi · Januari – Juli 2026</p>
+                    <p class="text-xs text-slate-400 mt-1">Laporan Operasional & Evaluasi Konsumsi Energi · Januari – Agustus 2026</p>
                 </div>
             </div>
             
-            <div class="flex space-x-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-full md:w-auto">
-                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-5 py-2.5 text-xs font-bold rounded-lg text-slate-300 w-1/2 md:w-auto text-center border border-transparent">
-                    Hal 1: Ringkasan & Lini Produksi
+            <div class="flex flex-wrap gap-1 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-full md:w-auto">
+                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-transparent">
+                    Hal 1: Ringkasan & Lini
                 </button>
-                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-5 py-2.5 text-xs font-bold rounded-lg text-slate-300 w-1/2 md:w-auto text-center border border-slate-600">
-                    Hal 2: Fasilitas Candy & SBC
+                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
+                    Hal 2: Candy & SBC
+                </button>
+                <button onclick="switchTab(3)" id="btnTab3" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
+                    Hal 3: Solar Panel
                 </button>
             </div>
         </div>
@@ -40,14 +43,14 @@
         <div id="page1" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="card border-t-4 border-blue-600">
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Biaya 7 Bulan (Lini Utama)</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Biaya 8 Bulan (Lini Utama)</p>
                     <h2 id="kpiTotalCost" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
                     <p class="text-xs text-gray-400 mt-1">Akumulasi Seluruh Lini Produksi</p>
                 </div>
                 <div class="card border-t-4 border-green-500">
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Biaya Bulan Juli 2026</p>
-                    <h2 id="kpiJulCost" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
-                    <p id="kpiJulTrend" class="text-xs font-bold mt-1">-</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Biaya Bulan Agustus 2026</p>
+                    <h2 id="kpiAugCost" class="text-2xl font-bold text-gray-900 mt-2">Rp 0</h2>
+                    <p id="kpiAugTrend" class="text-xs font-bold mt-1">-</p>
                 </div>
                 <div class="card border-t-4 border-amber-500">
                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Bulan Tertinggi (Peak)</p>
@@ -63,11 +66,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="card">
-                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Tren Total Biaya Bulanan (Jan - Jul 2026)</h3>
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Tren Total Biaya Bulanan (Jan - Agu 2026)</h3>
                     <div class="relative h-64 w-full"><canvas id="trendBulanan"></canvas></div>
                 </div>
                 <div class="card">
-                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Komposisi Rata-Rata Biaya Energi (Top 5 + Lainnya)</h3>
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Komposisi Biaya Energi 8 Bulan (Top 5 + Lainnya)</h3>
                     <div class="relative h-64 w-full flex justify-center"><canvas id="komposisiPie"></canvas></div>
                 </div>
             </div>
@@ -80,26 +83,36 @@
                 <div class="card">
                     <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Korelasi Biaya Listrik vs Output Produksi</h3>
                     <div class="relative h-64"><canvas id="secComboChart"></canvas></div>
-                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik (Rp Juta) | Garis Hijau: Volume Output Produksi</p>
+                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik (Rp Juta) | Garis Hijau: Volume Output Produksi </p>
                 </div>
             </div>
 
+            <div class="card">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 border-b pb-2 gap-2">
+                    <h3 class="text-sm font-bold text-gray-800">Biaya Listrik per Unit Produk (SEC) — Jan s/d Agu 2026</h3>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-1 rounded-full">Solar 1.125 kWp operasional sejak 28 Juli 2026</span>
+                </div>
+                <div class="relative h-72 w-full"><canvas id="secPerUnitChart"></canvas></div>
+                <p class="text-[10px] text-gray-500 mt-2 italic text-center">Semakin rendah nilai SEC = semakin efisien. Kenaikan SEC Agustus dipicu peralihan chiller absorbsi → chiller elektrik (krisis batu bara), meski total biaya turun berkat solar 1.125 kWp.</p>
+            </div>
+
             <div class="card overflow-x-auto">
-                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Matriks Konsumsi Energi Lini Produksi (Jan - Jul 2026)</h3>
-                <div class="min-w-[900px]">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Matriks Konsumsi Energi Lini Produksi (Jan - Agu 2026)</h3>
+                <div class="min-w-[980px]">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="text-gray-400 text-[10px] uppercase border-b border-gray-200">
                                 <th class="w-8 text-center pb-2">#</th>
                                 <th class="pb-2">Lini Produksi / Operasional</th>
-                                <th class="text-center pb-2 w-16">JAN</th>
-                                <th class="text-center pb-2 w-16">FEB</th>
-                                <th class="text-center pb-2 w-16">MAR</th>
-                                <th class="text-center pb-2 w-16">APR</th>
-                                <th class="text-center pb-2 w-16">MEI</th>
-                                <th class="text-center pb-2 w-16">JUN</th>
-                                <th class="text-center pb-2 w-16">JUL</th>
-                                <th class="text-right pb-2 w-20">TREN (JLN-JUL)</th>
+                                <th class="text-center pb-2 w-14">JAN</th>
+                                <th class="text-center pb-2 w-14">FEB</th>
+                                <th class="text-center pb-2 w-14">MAR</th>
+                                <th class="text-center pb-2 w-14">APR</th>
+                                <th class="text-center pb-2 w-14">MEI</th>
+                                <th class="text-center pb-2 w-14">JUN</th>
+                                <th class="text-center pb-2 w-14">JUL</th>
+                                <th class="text-center pb-2 w-14">AGU</th>
+                                <th class="text-right pb-2 w-20">TREN (JAN-AGU)</th>
                             </tr>
                         </thead>
                         <tbody id="heatmapBody"></tbody>
@@ -113,15 +126,15 @@
                         <span class="p-2 bg-blue-600 text-white rounded-lg text-xs font-bold">ANALISIS EKSEKUTIF</span>
                         <h3 class="text-base font-bold text-slate-900">Laporan Evaluasi Performa Energi Lini Produksi</h3>
                     </div>
-                    <span class="text-xs text-slate-500">Periode Data: Jan - Jul 2026</span>
+                    <span class="text-xs text-slate-500">Periode Data: Jan - Agu 2026</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
-                        <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">1. Specific Energy Consumption (SEC)</span>
-                        <h4 class="text-sm font-bold text-slate-800">Efisiensi Decoupling Energi vs Produksi</h4>
+                        <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">1. Efisiensi Biaya & SEC Agustus</span>
+                        <h4 class="text-sm font-bold text-slate-800">Biaya Absolute Turun, SEC Naik karena Chiller Elektrik</h4>
                         <p class="text-xs text-slate-600 leading-relaxed text-justify">
-                            Pada bulan Juli 2026, terjadi tren efisiensi positif di mana volume <strong>output produksi naik pesat menjadi 65.89 Juta unit</strong> (+19.5% vs Juni), sementara <strong>total biaya listrik lini produksi utama justru turun mencapai titik terendah tahun ini di Rp 1,168 Miliar</strong> (-3,34%). Hal ini menandakan rasio SEC (biaya listrik per unit produk) membaik secara signifikan dari Rp 21,93/unit (Juni) menjadi <strong>Rp 17,73/unit (Juli)</strong>.
+                            Biaya listrik lini utama Agustus mencapai <strong>Rp 1,144 Miliar</strong> (−11,16% vs Juli) — titik terendah tahun ini, didukung solar panel <strong>1.125 kWp</strong> (operasional sejak 28 Juli). Namun <strong>SEC naik ke Rp 20,77/unit</strong> dari Rp 19,55/unit di Juli. Penyebab utamanya: <strong>krisis batu bara nasional</strong> membuat chiller absorbsi tidak dapat beroperasi, sehingga diganti chiller elektrik yang membebani konsumsi listrik. Output produksi juga turun, memperkuat kenaikan SEC.
                         </p>
                     </div>
 
@@ -129,15 +142,15 @@
                         <span class="text-[11px] font-bold text-amber-600 uppercase tracking-wider">2. Evaluasi Pareto & Cost Drivers</span>
                         <h4 class="text-sm font-bold text-slate-800">Dinamika Lini Konsumsi Tinggi</h4>
                         <p class="text-xs text-slate-600 leading-relaxed text-justify">
-                            <strong>Liquid-Semisolid-Sachet-Kosmetik-Alkes</strong> tetap menjadi kontributor biaya terbesar (~25.3% dari total). Namun, lini ini sukses menekan konsumsi energi secara konsisten dari puncaknya di bulan April (Rp 347,5 Jt) hingga Juli (Rp 243,3 Jt). Lini <strong>Tesma</strong> dan <strong>Parlin</strong> perlu terus diawasi karena tren beban kembali naik mendekati kisaran Rp 108 Juta/bulan.
+                            <strong>Liquid–Semisolid–Sachet–Kosmetik–Alkes</strong> tetap menjadi kontributor terbesar (~22,3% dari total 8 bulan). Di Agustus sendiri lini ini mencatat Rp 241,2 Juta. Diikuti oleh Total Office (Rp 115,1 Jt), Obat Dalam (Rp 93,4 Jt), Utility Broad Farma (Rp 84,0 Jt), dan Lab AndevQC (Rp 70,6 Jt).
                         </p>
                     </div>
 
                     <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
-                        <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">3. Dampak Pembaruan Data Juli</span>
-                        <h4 class="text-sm font-bold text-slate-800">Stabilisasi Area Lab & Support</h4>
+                        <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">3. Dampak Krisis Batu Bara & Chiller</span>
+                        <h4 class="text-sm font-bold text-slate-800">Peralihan ke Chiller Elektrik</h4>
                         <p class="text-xs text-slate-600 leading-relaxed text-justify">
-                            Data terbaru pemakaian bulan Juli pada area <strong>Lab AndevQC Pusat + QC Micro (Rp 87,31 Jt)</strong> mengonfirmasi keberhasilan normalisasi beban pasca-anomali ekstrem yang terjadi pada bulan Mei (Rp 187,5 Jt). Sementara itu, <em>Utility Broad Natpro</em> stabil di angka Rp 40,5 Jt setelah sempat melonjak di angka Rp 151,3 Jt pada bulan Maret.
+                            Karena pasokan batu bara terganggu, <strong>chiller absorbsi</strong> (yang mengandalkan uap/boiler) tidak bisa dijalankan dan diganti <strong>chiller elektrik</strong>. Ini menjelaskan mengapa beban listrik Agustus terlihat “lebih tinggi” secara efisiensi per unit, meskipun total tagihan PLN tetap lebih rendah berkat solar dan penurunan beban di beberapa lini (Parline, Softcap, Lab, dll).
                         </p>
                     </div>
                 </div>
@@ -149,11 +162,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300">
                         <div class="flex items-start space-x-2">
                             <span class="text-blue-400 font-bold">•</span>
-                            <span><strong>Penerapan Sub-metering Digital:</strong> Pemasangan IoT smart-meter dedicated pada lini <em>Tesma</em> dan <em>Parlin</em> untuk memantau lonjakan beban saat proses start-up mesin.</span>
+                            <span><strong>Pertahankan momentum efisiensi Agustus:</strong> Identifikasi praktik operasional yang berhasil menekan beban di bulan ini dan standarisasi ke lini lain (khususnya Parline & Tesma).</span>
                         </div>
                         <div class="flex items-start space-x-2">
                             <span class="text-blue-400 font-bold">•</span>
-                            <span><strong>Optimasi Schedule Batching:</strong> Pertahankan pengelompokan kampanye produksi *Liquid & Semisolid* pada jam kerja non-peak PLN (LWBP) untuk menjaga rasio SEC tetap rendah.</span>
+                            <span><strong>Sub-metering Digital:</strong> Prioritaskan IoT smart-meter pada lini Parline, Tesma, dan Liquid-Semisolid untuk monitoring real-time peak load.</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <span class="text-blue-400 font-bold">•</span>
+                            <span><strong>Optimasi Schedule Batching:</strong> Pertahankan pengelompokan kampanye produksi Liquid & Semisolid pada jam non-peak PLN (LWBP).</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <span class="text-blue-400 font-bold">•</span>
+                            <span><strong>Review Utility Broad Farma:</strong> Lini ini naik ke Rp 84 Jt di Agustus — perlu dicek apakah ada peningkatan beban utilitas yang tidak sejalan dengan output.</span>
                         </div>
                     </div>
                 </div>
@@ -162,21 +183,22 @@
 
         <div id="page2" class="space-y-6 hidden">
             <div class="card overflow-x-auto">
-                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Konsumsi Energi Fasilitas Khusus: Gedung Candy & SBC (Jan - Jul 2026)</h3>
-                <div class="min-w-[900px]">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Konsumsi Energi Fasilitas Khusus: Gedung Candy & SBC (Jan - Agu 2026)</h3>
+                <div class="min-w-[980px]">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="text-gray-400 text-[10px] uppercase border-b border-gray-200">
                                 <th class="w-8 text-center pb-2">#</th>
                                 <th class="pb-2">Nama Gedung / Fasilitas Khusus</th>
-                                <th class="text-center pb-2 w-16">JAN</th>
-                                <th class="text-center pb-2 w-16">FEB</th>
-                                <th class="text-center pb-2 w-16">MAR</th>
-                                <th class="text-center pb-2 w-16">APR</th>
-                                <th class="text-center pb-2 w-16">MEI</th>
-                                <th class="text-center pb-2 w-16">JUN</th>
-                                <th class="text-center pb-2 w-16">JUL</th>
-                                <th class="text-right pb-2 w-20">TREN (JLN-JUL)</th>
+                                <th class="text-center pb-2 w-14">JAN</th>
+                                <th class="text-center pb-2 w-14">FEB</th>
+                                <th class="text-center pb-2 w-14">MAR</th>
+                                <th class="text-center pb-2 w-14">APR</th>
+                                <th class="text-center pb-2 w-14">MEI</th>
+                                <th class="text-center pb-2 w-14">JUN</th>
+                                <th class="text-center pb-2 w-14">JUL</th>
+                                <th class="text-center pb-2 w-14">AGU</th>
+                                <th class="text-right pb-2 w-20">TREN (JAN-AGU)</th>
                             </tr>
                         </thead>
                         <tbody id="heatmapCandySbcBody"></tbody>
@@ -185,7 +207,7 @@
             </div>
 
             <div class="card">
-                <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">Komparasi Fluktuasi Biaya Bulanan: Gedung Candy vs Gedung SBC</h3>
+                <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">Komparasi Fluktuasi Biaya Bulanan: Gedung Candy vs Gedung SBC (Jan - Agu 2026)</h3>
                 <div class="relative h-72"><canvas id="candySbcChart"></canvas></div>
             </div>
 
@@ -195,21 +217,21 @@
                         <span class="p-2 bg-pink-600 text-white rounded-lg text-xs font-bold">ANALISIS FASILITAS</span>
                         <h3 class="text-base font-bold text-slate-900">Evaluasi & Diagnostik Operasional Gedung Candy & SBC</h3>
                     </div>
-                    <span class="text-xs text-slate-500">Pembaruan Data Juli 2026</span>
+                    <span class="text-xs text-slate-500">Periode Data: Jan - Agu 2026</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-5 rounded-xl border border-pink-100 shadow-sm space-y-3">
                         <div class="flex items-center justify-between">
                             <h4 class="text-sm font-bold text-pink-900">🏢 Gedung Candy</h4>
-                            <span class="px-2 py-0.5 bg-red-100 text-red-700 font-bold text-[10px] rounded-full">⚠️ Lonjakan Juli: +14,35%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 font-bold text-[10px] rounded-full">✓ Stabil Agustus: -0,2%</span>
                         </div>
                         <div class="space-y-2 text-xs text-slate-600 leading-relaxed text-justify">
                             <p>
-                                <strong>Diagnostik Kinerja:</strong> Konsumsi energi Gedung Candy di bulan Juli 2026 menyentuh angka <strong>Rp 249,96 Juta</strong>, naik drastis dari bulan Juni (Rp 218,59 Jt). Kenaikan ini mendekati puncak konsumsi tertinggi yang pernah tercatat pada bulan Maret (Rp 291,55 Jt).
+                                <strong>Diagnostik Kinerja:</strong> Konsumsi energi Gedung Candy di bulan Agustus 2026 tercatat <strong>Rp 249,46 Juta</strong>, hampir flat dibanding Juli (Rp 249,96 Jt / -0,2%). Meskipun masih berada di level tinggi (mendekati puncak Maret Rp 291,55 Jt), lonjakan tajam yang terjadi di Juli berhasil dihentikan.
                             </p>
                             <p>
-                                <strong>Penyebab Utama (Root Cause):</strong> Sebagai gedung produksi konfeksioneri/candy yang sangat sensitif terhadap kelembapan dan suhu (*humidity & temperature controlled cleanroom*), lonjakan beban pendingin (*Chiller/AHU*) diduga kuat dipicu oleh tingginya temperatur udara ambien di musim kemarau pertengahan tahun, ditambah adanya jam kerja lembur operasional.
+                                <strong>Catatan:</strong> Sebagai gedung produksi konfeksioneri yang sensitif terhadap kelembapan & suhu, beban Chiller/AHU masih menjadi cost driver utama. Perlu terus dimonitor terutama memasuki musim kemarau lanjutan.
                             </p>
                         </div>
                     </div>
@@ -217,14 +239,14 @@
                     <div class="bg-white p-5 rounded-xl border border-indigo-100 shadow-sm space-y-3">
                         <div class="flex items-center justify-between">
                             <h4 class="text-sm font-bold text-indigo-900">🏢 Gedung SBC</h4>
-                            <span class="px-2 py-0.5 bg-red-100 text-red-700 font-bold text-[10px] rounded-full">⚠️ Lonjakan Juli: +17,66%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 font-bold text-[10px] rounded-full">✓ Turun Agustus: -7,26%</span>
                         </div>
                         <div class="space-y-2 text-xs text-slate-600 leading-relaxed text-justify">
                             <p>
-                                <strong>Diagnostik Kinerja:</strong> Gedung SBC mencatatkan pola konsumsi energi yang sangat fluktuatif (*high volatility*). Setelah sempat berada di titik terendah pada bulan Mei (Rp 139,50 Jt), biaya listrik mengalami kenaikan beruntun selama dua bulan berturut-turut hingga mencapai <strong>Rp 240,21 Juta pada bulan Juli</strong>.
+                                <strong>Diagnostik Kinerja:</strong> Gedung SBC berhasil menekan biaya listrik di Agustus menjadi <strong>Rp 222,78 Juta</strong> (turun -7,26% dari Juli Rp 240,21 Jt). Setelah sempat naik beruntun Juni–Juli, tren Agustus menunjukkan perbaikan.
                             </p>
                             <p>
-                                <strong>Penyebab Utama (Root Cause):</strong> Karakteristik utilitas SBC sangat dipengaruhi oleh jadwal *campaign production* (produksi berbasis lot/batch besar). Reaktivasi mesin secara bersamaan pasca *maintenance/low-season* di bulan Mei menyebabkan *peak demand charge* yang signifikan pada periode Juni-Juli.
+                                <strong>Catatan:</strong> Pola konsumsi SBC tetap fluktuatif karena dipengaruhi jadwal campaign production. Penurunan Agustus perlu dikonfirmasi apakah berasal dari optimasi start-up atau penurunan volume batch.
                             </p>
                         </div>
                     </div>
@@ -251,19 +273,96 @@
                 </div>
             </div>
         </div>
+
+                <div id="page3" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="card border-t-4 border-emerald-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Produksi PV (28 Jul – 31 Agu)</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2">175.242 kWh</h2>
+                    <p class="text-xs text-gray-400 mt-1">Juli 17.179 + Agustus 158.063</p>
+                </div>
+                <div class="card border-t-4 border-green-600">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Nilai Penghematan</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2">Rp 180,2 Jt</h2>
+                    <p class="text-xs text-gray-400 mt-1">Juli 17,8 Jt + Agustus 162,5 Jt</p>
+                </div>
+                <div class="card border-t-4 border-teal-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Produksi Agustus</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2">158.063 kWh</h2>
+                    <p class="text-xs text-gray-400 mt-1">Rata-rata 5.099 kWh/hari</p>
+                </div>
+                <div class="card border-t-4 border-cyan-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Export ke PLN (Agustus)</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2">1.224 kWh</h2>
+                    <p class="text-xs text-gray-400 mt-1">~0,8% dari produksi</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card md:col-span-2">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Produksi Harian Solar Panel (kWh) — 28 Juli s/d 31 Agustus 2026</h3>
+                    <div class="relative h-80 w-full"><canvas id="solarDailyChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Komposisi Produksi Agustus</h3>
+                    <div class="relative h-64 w-full flex justify-center"><canvas id="solarPieChart"></canvas></div>
+                    <p class="text-[10px] text-gray-500 mt-2 text-center">Farmasi 125.720 kWh (79,5%) · Food 32.343 kWh (20,5%)</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Kontribusi Solar vs Biaya Listrik Lini Utama (Juli – Agustus)</h3>
+                <div class="relative h-64 w-full"><canvas id="solarVsCostChart"></canvas></div>
+                <p class="text-[10px] text-gray-500 mt-2 italic text-center">Nilai solar = angka Saving aktual dari pencatatan (self-consumed × tarif). Juli: 4 hari operasional (28–31).</p>
+            </div>
+
+            <div class="card bg-slate-50 border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="p-2 bg-emerald-600 text-white rounded-lg text-xs font-bold">ANALISIS SOLAR</span>
+                        <h3 class="text-base font-bold text-slate-900">Evaluasi Kontribusi Solar Panel 1.125 kWp</h3>
+                    </div>
+                    <span class="text-xs text-slate-500">COD: 28 Juli 2026</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">1. Perolehan Juli (Parsial)</span>
+                        <h4 class="text-sm font-bold text-slate-800">17.179 kWh · Rp 17,8 Juta</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                            Solar mulai beroperasi <strong>28 Juli 2026</strong>. Dalam 4 hari terakhir Juli dihasilkan <strong>17.179 kWh</strong> dengan nilai penghematan <strong>Rp 17,79 Juta</strong> (berdasarkan pencatatan Saving aktual).
+                        </p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">2. Perolehan Agustus (Penuh)</span>
+                        <h4 class="text-sm font-bold text-slate-800">158.063 kWh · Rp 162,5 Juta</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                            Bulan penuh pertama menghasilkan <strong>158.063 kWh</strong> (rata-rata 5.099 kWh/hari). Nilai Saving tercatat <strong>Rp 162,45 Juta</strong>. Hampir seluruh energi dipakai sendiri; export ke PLN hanya 1.224 kWh.
+                        </p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="text-[11px] font-bold text-amber-600 uppercase tracking-wider">3. Dampak ke Tagihan Listrik</span>
+                        <h4 class="text-sm font-bold text-slate-800">Solar &gt; Penurunan Biaya Lini</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                            Biaya listrik lini utama turun ~<strong>Rp 144 Juta</strong> (Juli → Agustus). Nilai solar Agustus saja sudah <strong>Rp 162,5 Juta</strong> — lebih besar dari penurunan tagihan, sehingga solar efektif menutup beban tambahan chiller elektrik akibat krisis batu bara.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         const charts = {};
 
         function formatIDR(val) {
-            if (val >= 1e9) return 'Rp ' + (val / 1e9).toFixed(2) + ' B';
-            if (val >= 1e6) return 'Rp ' + (val / 1e6).toFixed(2) + ' M';
+            if (val >= 1e9) return 'Rp ' + (val / 1e9).toFixed(3) + ' Miliar';
+            if (val >= 1e6) return 'Rp ' + (val / 1e6).toFixed(1) + ' Jt';
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
         }
 
         function switchTab(num) {
-            for (let i = 1; i <= 2; i++) {
+            for (let i = 1; i <= 3; i++) {
                 const page = document.getElementById('page' + i);
                 const btn = document.getElementById('btnTab' + i);
                 if (!page || !btn) continue;
@@ -285,36 +384,38 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Data Lini Utama Ter-update (Jan - Jul 2026)
+            // Data Lini Utama Ter-update (Jan - Agu 2026)
             const rawData = [
-                { name: "Parlin", data: [89591987, 71832644, 69489537, 74597395, 88968640, 103735128, 108420963] },
-                { name: "Softcap", data: [49790133, 51051617, 41056149, 44267450, 24460007, 26689385, 23961935] },
-                { name: "Tesma", data: [126920856, 129351832, 28619119, 7763689, 96734602, 108220366, 108707700] },
-                { name: "Pilot", data: [70474212, 75529337, 28482293, 48943919, 74716974, 84458848, 76490230] },
-                { name: "Boiler Kompresor RO", data: [70805403, 61567281, 58874771, 60568789, 69104134, 63338465, 54334429] },
-                { name: "Utility Broad Farma", data: [90001410, 88824349, 66545343, 75389869, 56111932, 65039112, 84898164] },
-                { name: "Tablet", data: [33666180, 34097084, 32658987, 32332276, 29522341, 34238480, 36815033] },
-                { name: "Effer", data: [4634893, 3064631, 5447360, 2731778, 7618658, 4506732, 3847204] },
-                { name: "Liquid – Semisolid – Sachet – Kosmetik – alkes", data: [313517305, 303286493, 286537396, 347517680, 311264069, 296670978, 243373357] },
-                { name: "Obat Dalam", data: [130461272, 142462531, 88976896, 109065873, 113209722, 112799442, 105582841] },
-                { name: "Obat Luar", data: [28690511, 32300248, 32832638, 34060001, 27828581, 19176263, 18745105] },
-                { name: "Extraksi", data: [2889322, 2913319, 3184941, 3856504, 3180880, 3182227, 3297924] },
-                { name: "Office + RPD +Andev + QC gedung natpro", data: [50348004, 42442285, 48096770, 52000714, 53026987, 52220704, 50606011] },
-                { name: "Kantin + Limbah Gedung natpro", data: [27484955, 27686450, 40730232, 34712226, 32555822, 8148182, 13642598] },
-                { name: "Utility Broad Natpro , Kompresor , RO", data: [25782789, 24091560, 151388337, 96909085, 32001760, 27412190, 40537152] },
-                { name: "Natpro Lama", data: [14293764, 14293764, 14293764, 7839819, 14293764, 16850276, 16973120] },
-                { name: "Logistic + PPIC FM1", data: [54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 54059984] },
-                { name: "Logistic +PPIC FM2", data: [16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639] },
-                { name: "Total Office teknik+HRO+Marketing+Acc+WIC QCFM+Hydrant+WSE+U T1", data: [101677719, 88170524, 94758618, 21375905, 98527291, 103172751, 103465364] },
-                { name: "DATA CENTER", data: [17450438, 16201722, 17490977, 16853709, 17436768, 16946792, 17953004] },
-                { name: "Lab AndevQC pusat+ QC micro +Lab RPD FM1 +Office QA-GM-PPIC", data: [108029071, 99782977, 44818251, 70052844, 187518438, 88111888, 87314264] },
-                { name: "Aerator Limbah FM", data: [22731746, 18703597, 17777610, 23532404, 13122815, 14628839, 18798889] }
+                { name: "Parline", data: [89591987, 71832644, 69489537, 74597395, 88968640, 103735128, 108420963, 69169322] },
+                { name: "Softcap", data: [49790133, 51051617, 41056149, 44267450, 24460007, 26689385, 23961935, 20736329] },
+                { name: "Tesma", data: [126920856, 129351832, 28619119, 7763689, 96734602, 108220366, 108707700, 64553711] },
+                { name: "Pilot", data: [70474212, 75529337, 28482293, 48943919, 74716974, 84458848, 76490230, 65867312] },
+                { name: "Boiler Kompresor RO", data: [70805403, 61567281, 58874771, 60568789, 69104134, 63338465, 54334429, 57970610] },
+                { name: "Utility Broad Farma", data: [90001410, 88824349, 66545343, 75389869, 56111932, 65039112, 84898164, 84014187] },
+                { name: "Tablet", data: [33666180, 34097084, 32658987, 32332276, 29522341, 34238480, 36815033, 31084542] },
+                { name: "Effer", data: [4634893, 3064631, 5447360, 2731778, 7618658, 4506732, 3847204, 7567039] },
+                { name: "Liquid – Semisolid – Sachet – Kosmetik – alkes", data: [313517305, 303286493, 286537396, 347517680, 311264069, 296670978, 243373357, 241221078] },
+                { name: "Obat Dalam", data: [130461272, 142462531, 88976896, 109065873, 113209722, 112799442, 105582841, 93392412] },
+                { name: "Obat Luar", data: [28690511, 32300248, 32832638, 34060001, 27828581, 19176263, 18745105, 9152249] },
+                { name: "Extraksi", data: [2889322, 2913319, 3184941, 3856504, 3180880, 3182227, 3297924, 2976832] },
+                { name: "Office + RPD +Andev + QC gedung natpro", data: [50348004, 42442285, 48096770, 52000714, 53026987, 52220704, 50606011, 48544855] },
+                { name: "Kantin + Limbah Gedung natpro", data: [27484955, 27686450, 40730232, 34712226, 32555822, 8148182, 13642598, 32052752] },
+                { name: "Utility Broad Natpro , Kompresor , RO", data: [25782789, 24091560, 151388337, 96909085, 32001760, 27412190, 40537152, 31960236] },
+                { name: "Natpro Lama", data: [14293764, 14293764, 14293764, 7839819, 14293764, 16850276, 16973120, 20039235] },
+                { name: "Logistic + PPIC FM1", data: [54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 54059984, 41261680] },
+                { name: "Logistic +PPIC FM2", data: [16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639, 16302639] },
+                { name: "Total Office teknik+HRO+Marketing+Acc+WIC QCFM+Hydrant+WSE+U T1", data: [101677719, 88170524, 94758618, 21375905, 98527291, 103172751, 103465364, 115113676] },
+                { name: "DATA CENTER", data: [17450438, 16201722, 17490977, 16853709, 17436768, 16946792, 17953004, 13358244] },
+                { name: "Lab AndevQC pusat+ QC micro +Lab RPD FM1 +Office QA-GM-PPIC", data: [108029071, 99782977, 44818251, 70052844, 187518438, 88111888, 87314264, 70608947] },
+                { name: "Aerator Limbah FM", data: [22731746, 18703597, 17777610, 23532404, 13122815, 14628839, 18798889, 7449060] }
             ];
 
-            const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 65897121];
-            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
+            // Output produksi hanya tersedia s/d Juli
+            const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 65897121, 55109179];
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu'];
+            const labels7 = labels; // now 8 months
 
-            let monthlyTotals = [0,0,0,0,0,0,0];
+            let monthlyTotals = [0,0,0,0,0,0,0,0];
             rawData.forEach(item => {
                 item.data.forEach((val, idx) => { monthlyTotals[idx] += val; });
             });
@@ -324,15 +425,15 @@
             const minVal = Math.min(...monthlyTotals);
             const maxIdx = monthlyTotals.indexOf(maxVal);
             const minIdx = monthlyTotals.indexOf(minVal);
-            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli'];
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus'];
 
             document.getElementById('kpiTotalCost').innerText = formatIDR(totalSum);
-            document.getElementById('kpiJulCost').innerText = formatIDR(monthlyTotals[6]);
+            document.getElementById('kpiAugCost').innerText = formatIDR(monthlyTotals[7]);
             
-            let julDiff = ((monthlyTotals[6] - monthlyTotals[5]) / monthlyTotals[5]) * 100;
-            let julTrendEl = document.getElementById('kpiJulTrend');
-            julTrendEl.innerText = (julDiff >= 0 ? '+' : '') + julDiff.toFixed(2) + '% vs Jun (Efisiensi)';
-            julTrendEl.className = 'text-xs font-bold mt-1 ' + (julDiff <= 0 ? 'text-green-600' : 'text-red-600');
+            let augDiff = ((monthlyTotals[7] - monthlyTotals[6]) / monthlyTotals[6]) * 100;
+            let augTrendEl = document.getElementById('kpiAugTrend');
+            augTrendEl.innerText = (augDiff >= 0 ? '+' : '') + augDiff.toFixed(2) + '% vs Jul';
+            augTrendEl.className = 'text-xs font-bold mt-1 ' + (augDiff <= 0 ? 'text-green-600' : 'text-red-600');
 
             document.getElementById('kpiHighestMonth').innerText = formatIDR(maxVal);
             document.getElementById('kpiHighestName').innerText = monthNames[maxIdx];
@@ -345,7 +446,7 @@
                 rawData.forEach((item, index) => {
                     let tr = document.createElement('tr');
                     tr.className = "border-b border-gray-100 hover:bg-gray-50";
-                    let displayName = item.name.length > 38 ? item.name.substring(0,38) + '...' : item.name;
+                    let displayName = item.name.length > 36 ? item.name.substring(0,36) + '...' : item.name;
 
                     let cells = `<td class="p-2 text-xs text-gray-500 text-center font-medium">${index + 1}</td>
                                  <td class="p-2 text-xs font-semibold text-gray-700" title="${item.name}">${displayName}</td>`;
@@ -354,7 +455,7 @@
                         let bg = val > 150000000 ? 'bg-blue-600 text-white' : (val > 100000000 ? 'bg-blue-500 text-white' : (val > 50000000 ? 'bg-blue-300 text-gray-800' : 'bg-blue-50 text-gray-800'));
                         cells += `<td class="p-1"><div class="text-center text-xs font-bold rounded py-1 ${bg}">${jtn}Jt</div></td>`;
                     });
-                    let first = item.data[0], last = item.data[6];
+                    let first = item.data[0], last = item.data[7];
                     let trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
                     let tColor = trend < 0 ? 'text-green-600' : (trend > 0 ? 'text-red-600' : 'text-gray-500');
                     cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
@@ -363,9 +464,9 @@
                 });
             }
 
-            // Proporsi & Pareto Dinamis
+            // Proporsi & Pareto Dinamis (8 bulan)
             let lineTotals = rawData.map(item => ({
-                name: item.name.substring(0, 16), 
+                name: item.name.length > 18 ? item.name.substring(0, 18) + '…' : item.name, 
                 total: item.data.reduce((a,b) => a+b, 0)
             }));
             lineTotals.sort((a,b) => b.total - a.total);
@@ -383,27 +484,181 @@
 
             const monthlyTotalsJuta = monthlyTotals.map(v => Math.round(v / 1000000));
 
-            charts.c1 = new Chart(document.getElementById('trendBulanan'), { type: 'line', data: { labels: labels, datasets: [{ label: 'Total Biaya (Rp)', data: monthlyTotals, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
-            
-            charts.c2 = new Chart(document.getElementById('komposisiPie'), { type: 'doughnut', data: { labels: pieLabels, datasets: [{ data: pieDataArr, backgroundColor: ['#2563eb', '#dc2626', '#10b981', '#f59e0b', '#8b5cf6', '#94a3b8'] }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } } });
+            // SEC = biaya listrik per unit produk (Rp/unit)
+            const secPerUnit = monthlyTotals.map((cost, i) => {
+                const out = outputProduksi[i];
+                return out > 0 ? +(cost / out).toFixed(2) : null;
+            });
 
-            charts.c4 = new Chart(document.getElementById('paretoChart'), { type: 'bar', data: { labels: paretoLabels, datasets: [{ label: 'Total Akumulasi Cost (Juta Rp)', data: paretoDataArr, backgroundColor: '#2563eb', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false } });
+            charts.c1 = new Chart(document.getElementById('trendBulanan'), { 
+                type: 'line', 
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        label: 'Total Biaya (Rp)', 
+                        data: monthlyTotals, 
+                        borderColor: '#2563eb', 
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)', 
+                        fill: true, 
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#2563eb'
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return (value / 1e9).toFixed(1) + ' M';
+                                }
+                            }
+                        }
+                    }
+                } 
+            });
             
+            charts.c2 = new Chart(document.getElementById('komposisiPie'), { 
+                type: 'doughnut', 
+                data: { 
+                    labels: pieLabels, 
+                    datasets: [{ 
+                        data: pieDataArr, 
+                        backgroundColor: ['#2563eb', '#dc2626', '#10b981', '#f59e0b', '#8b5cf6', '#94a3b8'] 
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    cutout: '60%', 
+                    plugins: { 
+                        legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } 
+                    } 
+                } 
+            });
+
+            charts.c4 = new Chart(document.getElementById('paretoChart'), { 
+                type: 'bar', 
+                data: { 
+                    labels: paretoLabels, 
+                    datasets: [{ 
+                        label: 'Total Akumulasi Cost (Juta Rp)', 
+                        data: paretoDataArr, 
+                        backgroundColor: '#2563eb', 
+                        borderRadius: 4 
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                } 
+            });
+            
+            // Combo chart Biaya vs Output Produksi (Jan - Agu)
             charts.c5 = new Chart(document.getElementById('secComboChart'), {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: labels7,
                     datasets: [
-                        { label: 'Biaya Listrik (Juta Rp)', data: monthlyTotalsJuta, backgroundColor: 'rgba(37, 99, 235, 0.85)', yAxisID: 'y', order: 2, borderRadius: 4 },
-                        { label: 'Volume Output Produksi', data: outputProduksi, type: 'line', borderColor: '#10b981', backgroundColor: '#10b981', borderWidth: 3, pointRadius: 4, tension: 0.2, yAxisID: 'y1', order: 1 }
+                        { 
+                            label: 'Biaya Listrik (Juta Rp)', 
+                            data: monthlyTotalsJuta, 
+                            backgroundColor: 'rgba(37, 99, 235, 0.85)', 
+                            yAxisID: 'y', 
+                            order: 2, 
+                            borderRadius: 4 
+                        },
+                        { 
+                            label: 'Volume Output Produksi', 
+                            data: outputProduksi, 
+                            type: 'line', 
+                            borderColor: '#10b981', 
+                            backgroundColor: '#10b981', 
+                            borderWidth: 3, 
+                            pointRadius: 4, 
+                            tension: 0.2, 
+                            yAxisID: 'y1', 
+                            order: 1 
+                        }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }, scales: { y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Biaya (Juta Rp)', font: {size: 10} }, grid: { color: '#f1f5f9' } }, y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Output Produksi', font: {size: 10} }, grid: { drawOnChartArea: false } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false }, 
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } 
+                    }, 
+                    scales: { 
+                        y: { 
+                            type: 'linear', 
+                            display: true, 
+                            position: 'left', 
+                            title: { display: true, text: 'Biaya (Juta Rp)', font: {size: 10} }, 
+                            grid: { color: '#f1f5f9' } 
+                        }, 
+                        y1: { 
+                            type: 'linear', 
+                            display: true, 
+                            position: 'right', 
+                            title: { display: true, text: 'Output Produksi', font: {size: 10} }, 
+                            grid: { drawOnChartArea: false } 
+                        } 
+                    } 
+                }
             });
 
-            // Data Gedung Candy & SBC (Ter-update Juli 2026)
-            const dataCandy = [251362485, 236953776, 291550114, 233441235, 183846137, 218596417, 249960172];
-            const dataSbc = [253778070, 276430838, 161929134, 253800592, 139504096, 204164967, 240214675];
+            // Chart SEC per unit
+            charts.cSec = new Chart(document.getElementById('secPerUnitChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Biaya Listrik / Unit (Rp)',
+                        data: secPerUnit,
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.12)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointBackgroundColor: labels.map((_, i) => i >= 6 ? '#059669' : '#2563eb'),
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => 'SEC: Rp ' + ctx.parsed.y.toFixed(2) + ' / unit'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Rp per unit produk', font: { size: 11 } },
+                            ticks: {
+                                callback: (v) => 'Rp ' + v
+                            },
+                            grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
+            });
+
+            // Data Gedung Candy & SBC (Jan - Agu 2026)
+            const dataCandy = [251362485, 236953776, 291550114, 233441235, 183846137, 218596417, 249960172, 249462196];
+            const dataSbc = [253778070, 276430838, 161929134, 253800592, 139504096, 204164967, 240214675, 222783588];
 
             const candySbcRows = [
                 { name: "Gedung Candy", data: dataCandy, color: 'bg-pink-100 text-pink-800' },
@@ -421,7 +676,7 @@
                         let jtn = Math.round(val / 1000000);
                         cells += `<td class="p-1"><div class="text-center text-xs font-bold rounded py-1 ${item.color}">${jtn}Jt</div></td>`;
                     });
-                    let first = item.data[0], last = item.data[6];
+                    let first = item.data[0], last = item.data[7];
                     let trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
                     let tColor = trend < 0 ? 'text-green-600' : (trend > 0 ? 'text-red-600' : 'text-gray-500');
                     cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
@@ -440,6 +695,117 @@
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }
+            });
+
+            // ========== SOLAR PANEL DATA (Hal 3) — updated ==========
+            // Juli 28-31
+            const solarJulLabels = ['28 Jul', '29 Jul', '30 Jul', '31 Jul'];
+            const solarJulFarmasi = [3190, 4740, 3600, 3730];
+            const solarJulFood = [0, 0, 946, 973];
+            const solarJulTotal = [3190, 4740, 4546, 4703];
+
+            // Agustus 1-31
+            const solarAugLabels = Array.from({length: 31}, (_, i) => String(i + 1) + ' Agu');
+            const solarAugFarmasi = [3880,3760,3310,4040,4310,4130,4040,4380,4620,4320,4170,4440,4380,4340,4160,4110,3910,3200,2890,3800,4110,3870,3640,4370,4560,3350,4470,4650,4520,3750,4240];
+            const solarAugFood = [1020,984,239,1000,1040,1100,1070,1170,1230,1170,1100,1180,1160,1150,1110,1100,1060,867,781,1010,1070,1010,966,1140,1200,820,1160,1190,1170,977,1100];
+            const solarAugTotal = [4900,4744,3549,5040,5350,5230,5110,5550,5850,5490,5270,5620,5540,5490,5270,5210,4970,4067,3671,4810,5180,4880,4606,5510,5760,4170,5630,5840,5690,4727,5340];
+
+            const solarAllLabels = solarJulLabels.concat(solarAugLabels);
+            const solarAllFarmasi = solarJulFarmasi.concat(solarAugFarmasi);
+            const solarAllFood = solarJulFood.concat(solarAugFood);
+
+            const solarSavingJul = 17793509.25;
+            const solarSavingAug = 162450367.97;
+
+            charts.solarDaily = new Chart(document.getElementById('solarDailyChart'), {
+                type: 'bar',
+                data: {
+                    labels: solarAllLabels,
+                    datasets: [
+                        { label: 'Farmasi', data: solarAllFarmasi, backgroundColor: 'rgba(37, 99, 235, 0.85)', stack: 'pv' },
+                        { label: 'Food', data: solarAllFood, backgroundColor: 'rgba(16, 185, 129, 0.9)', stack: 'pv' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: (ctx) => {
+                                    const i = ctx.dataIndex;
+                                    const tot = (solarAllFarmasi[i] || 0) + (solarAllFood[i] || 0);
+                                    return 'Total: ' + tot.toLocaleString('id-ID') + ' kWh';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: { maxRotation: 90, minRotation: 45, font: { size: 8 }, autoSkip: true, maxTicksLimit: 20 },
+                            title: { display: true, text: 'Tanggal', font: { size: 10 } }
+                        },
+                        y: { stacked: true, title: { display: true, text: 'kWh', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
+                    }
+                }
+            });
+
+            charts.solarPie = new Chart(document.getElementById('solarPieChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Farmasi', 'Food'],
+                    datasets: [{ data: [125720, 32343], backgroundColor: ['#2563eb', '#10b981'] }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '55%',
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+                }
+            });
+
+            charts.solarVsCost = new Chart(document.getElementById('solarVsCostChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Juli 2026', 'Agustus 2026'],
+                    datasets: [
+                        {
+                            label: 'Biaya Listrik Lini Utama (Rp Juta)',
+                            data: [Math.round(monthlyTotals[6]/1e6), Math.round(monthlyTotals[7]/1e6)],
+                            backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Nilai Saving Solar (Rp Juta)',
+                            data: [Math.round(solarSavingJul/1e6), Math.round(solarSavingAug/1e6)],
+                            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                afterBody: (items) => {
+                                    if (items[0].dataIndex === 0) return 'Solar Juli: 28–31 Jul (4 hari) · 17.179 kWh';
+                                    return 'Solar Agustus: 158.063 kWh · Saving Rp 162,45 Jt';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Rp Juta', font: { size: 10 } },
+                            grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
             });
         });
     </script>

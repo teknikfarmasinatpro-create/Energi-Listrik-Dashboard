@@ -426,6 +426,12 @@
                 </div>
             </div>
 
+            <div class="card">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Output Produksi vs Total Energy Used (TOE) — Jan s/d Agu 2026</h3>
+                <div class="relative h-72 w-full"><canvas id="outputVsToeChart"></canvas></div>
+                <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Garis hijau: Total Output seluruh SEU | Garis ungu: Total TOE seluruh SEU — sumbu terpisah agar tren decoupling terlihat jelas</p>
+            </div>
+
             <div class="card overflow-x-auto">
                 <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Matriks Total Energy Used (TOE) — Jan s/d Agu 2026</h3>
                 <div class="min-w-[900px]">
@@ -1158,6 +1164,78 @@
                         y: {
                             title: { display: true, text: 'Total Energy Used (TOE)', font: { size: 10 } },
                             grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
+            });
+
+            // Output total vs TOE total (dual axis)
+            const totalOutputByMonth = labels.map((_, i) => seuNames.reduce((s, n) => s + energySEU[n].output[i], 0));
+            const totalToeByMonth = labels.map((_, i) => seuNames.reduce((s, n) => s + energySEU[n].toe[i], 0));
+
+            charts.outputVsToe = new Chart(document.getElementById('outputVsToeChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Output Produksi',
+                            data: totalOutputByMonth,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#10b981',
+                            tension: 0.3,
+                            yAxisID: 'y',
+                            fill: true
+                        },
+                        {
+                            label: 'Total TOE',
+                            data: totalToeByMonth,
+                            borderColor: '#7c3aed',
+                            backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#7c3aed',
+                            tension: 0.3,
+                            yAxisID: 'y1',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    if (ctx.dataset.yAxisID === 'y') {
+                                        return 'Output: ' + (ctx.parsed.y / 1e6).toFixed(2) + ' Juta unit';
+                                    }
+                                    return 'TOE: ' + ctx.parsed.y + ' TOE';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'Output (unit)', font: { size: 10 } },
+                            ticks: {
+                                callback: (v) => (v / 1e6).toFixed(0) + 'M'
+                            },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'TOE', font: { size: 10 } },
+                            grid: { drawOnChartArea: false }
                         }
                     }
                 }

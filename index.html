@@ -469,9 +469,9 @@
                     <div class="relative h-72 w-full"><canvas id="multiYearToeChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Intensitas Energi (TOE / Juta Unit) + Cost/Unit 2026</h3>
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Intensitas Energi (TOE/Juta Unit) + Cost/Unit 2024–2026</h3>
                     <div class="relative h-72 w-full"><canvas id="multiYearIntensityChart"></canvas></div>
-                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">TOE/Juta unit = proksi efisiensi lintas tahun (data biaya lengkap hanya 2026)</p>
+                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">Sumbu kiri: TOE/Juta unit · Sumbu kanan: Cost/Unit (Rp). 2026 s/d Agustus.</p>
                 </div>
             </div>
 
@@ -1274,8 +1274,6 @@
             const intensity2025 = output2025.map((o,i) => o ? +(toe2025[i] / (o/1e6)).toFixed(2) : null);
             const intensity2026 = totalOutputByMonth.map((o,i) => o ? +(totalToeByMonth[i] / (o/1e6)).toFixed(2) : null);
             // cost/unit 2026 only (8 months)
-            const costUnit2026 = monthCpu; // already computed
-
             charts.multiOut = new Chart(document.getElementById('multiYearOutputChart'), {
                 type: 'line',
                 data: {
@@ -1318,24 +1316,40 @@
                 }
             });
 
+            const costUnit2024 = [62.45,63.07,59.61,56.42,50.32,53.70,60.35,69.92,57.59,59.64,57.38,64.53];
+            const costUnit2025 = [59.85,54.77,57.04,57.36,54.89,51.15,53.25,62.33,51.32,50.58,64.73,67.29];
+            const costUnit2026 = monthCpu; // Jan-Agu 2026
+
             charts.multiInt = new Chart(document.getElementById('multiYearIntensityChart'), {
                 type: 'line',
                 data: {
                     labels: labels12,
                     datasets: [
-                        { label: 'TOE/Jt Unit 2024', data: intensity2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'y' },
-                        { label: 'TOE/Jt Unit 2025', data: intensity2025, borderColor: '#2563eb', borderWidth: 2.5, pointRadius: 3, tension: 0.3, yAxisID: 'y' },
-                        { label: 'TOE/Jt Unit 2026', data: intensity2026.concat([null,null,null,null]), borderColor: '#7c3aed', borderWidth: 3, pointRadius: 4, tension: 0.3, yAxisID: 'y' },
-                        { label: 'Cost/Unit 2026 (Rp)', data: costUnit2026.concat([null,null,null,null]), borderColor: '#dc2626', borderWidth: 2, borderDash: [5,4], pointRadius: 3, tension: 0.3, yAxisID: 'y1' }
+                        { label: 'TOE/Jt Unit 2024', data: intensity2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 2.5, tension: 0.3, yAxisID: 'y' },
+                        { label: 'TOE/Jt Unit 2025', data: intensity2025, borderColor: '#2563eb', borderWidth: 2, pointRadius: 2.5, tension: 0.3, yAxisID: 'y' },
+                        { label: 'TOE/Jt Unit 2026', data: intensity2026.concat([null,null,null,null]), borderColor: '#7c3aed', borderWidth: 2.5, pointRadius: 3, tension: 0.3, yAxisID: 'y' },
+                        { label: 'Cost/Unit 2024 (Rp)', data: costUnit2024, borderColor: '#64748b', borderWidth: 2, borderDash: [6,4], pointRadius: 2, tension: 0.3, yAxisID: 'y1' },
+                        { label: 'Cost/Unit 2025 (Rp)', data: costUnit2025, borderColor: '#0ea5e9', borderWidth: 2, borderDash: [6,4], pointRadius: 2, tension: 0.3, yAxisID: 'y1' },
+                        { label: 'Cost/Unit 2026 (Rp)', data: costUnit2026.concat([null,null,null,null]), borderColor: '#dc2626', borderWidth: 2.5, borderDash: [6,4], pointRadius: 3, tension: 0.3, yAxisID: 'y1' }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } }
+                    },
                     scales: {
-                        y: { position: 'left', title: { display: true, text: 'TOE / Juta Unit', font: { size: 10 } }, grid: { color: '#f1f5f9' } },
-                        y1: { position: 'right', title: { display: true, text: 'Rp / unit (2026)', font: { size: 10 } }, grid: { drawOnChartArea: false } }
+                        y: {
+                            position: 'left',
+                            title: { display: true, text: 'TOE / Juta Unit', font: { size: 10 } },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y1: {
+                            position: 'right',
+                            title: { display: true, text: 'Rp / unit', font: { size: 10 } },
+                            grid: { drawOnChartArea: false }
+                        }
                     }
                 }
             });

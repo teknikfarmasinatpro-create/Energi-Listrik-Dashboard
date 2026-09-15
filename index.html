@@ -455,6 +455,26 @@
                 </div>
             </div>
 
+            <div class="card">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 border-b pb-2 gap-2">
+                    <h3 class="text-sm font-bold text-gray-800">Perbandingan Multi-Tahun: Output Produksi (2024 – 2026)</h3>
+                    <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-full">Jan–Des 2024/2025 · Jan–Agu 2026</span>
+                </div>
+                <div class="relative h-72 w-full"><canvas id="multiYearOutputChart"></canvas></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Total TOE per Bulan — 2024 vs 2025 vs 2026</h3>
+                    <div class="relative h-72 w-full"><canvas id="multiYearToeChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Intensitas Energi (TOE / Juta Unit) + Cost/Unit 2026</h3>
+                    <div class="relative h-72 w-full"><canvas id="multiYearIntensityChart"></canvas></div>
+                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">TOE/Juta unit = proksi efisiensi lintas tahun (data biaya lengkap hanya 2026)</p>
+                </div>
+            </div>
+
             <div class="card bg-slate-50 border border-slate-200 space-y-6">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                     <div class="flex items-center space-x-2">
@@ -1237,6 +1257,85 @@
                             title: { display: true, text: 'TOE', font: { size: 10 } },
                             grid: { drawOnChartArea: false }
                         }
+                    }
+                }
+            });
+
+
+            // ========== MULTI-YEAR 2024 / 2025 / 2026 ==========
+            const labels12 = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+            const output2024 = [59027696,54612811,56516443,55563658,70485758,57598696,47828915,35853614,46373147,54896149,51383976,47629944];
+            const output2025 = [45822487,51140860,47843677,51012645,53438063,52497592,57688489,45191777,55729943,61693970,44494071,46949252];
+            const output2026 = totalOutputByMonth.concat([null,null,null,null]); // Jan-Agu only
+            const toe2024 = [682,567,592,486,572,505,501,423,445,530,447,475];
+            const toe2025 = [448,504,435,522,484,468,550,483,452,490,452,560];
+            const toe2026 = totalToeByMonth.concat([null,null,null,null]);
+            const intensity2024 = output2024.map((o,i) => o ? +(toe2024[i] / (o/1e6)).toFixed(2) : null);
+            const intensity2025 = output2025.map((o,i) => o ? +(toe2025[i] / (o/1e6)).toFixed(2) : null);
+            const intensity2026 = totalOutputByMonth.map((o,i) => o ? +(totalToeByMonth[i] / (o/1e6)).toFixed(2) : null);
+            // cost/unit 2026 only (8 months)
+            const costUnit2026 = monthCpu; // already computed
+
+            charts.multiOut = new Chart(document.getElementById('multiYearOutputChart'), {
+                type: 'line',
+                data: {
+                    labels: labels12,
+                    datasets: [
+                        { label: '2024', data: output2024, borderColor: '#94a3b8', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+                        { label: '2025', data: output2025, borderColor: '#2563eb', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+                        { label: '2026 (s/d Agu)', data: output2026, borderColor: '#10b981', backgroundColor: 'transparent', borderWidth: 3, pointRadius: 4, tension: 0.3 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Output (unit)', font: { size: 10 } },
+                            ticks: { callback: v => (v/1e6).toFixed(0) + 'M' },
+                            grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
+            });
+
+            charts.multiToe = new Chart(document.getElementById('multiYearToeChart'), {
+                type: 'line',
+                data: {
+                    labels: labels12,
+                    datasets: [
+                        { label: 'TOE 2024', data: toe2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+                        { label: 'TOE 2025', data: toe2025, borderColor: '#2563eb', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+                        { label: 'TOE 2026 (s/d Agu)', data: toe2026, borderColor: '#7c3aed', borderWidth: 3, pointRadius: 4, tension: 0.3 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
+                    scales: {
+                        y: { title: { display: true, text: 'TOE', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
+                    }
+                }
+            });
+
+            charts.multiInt = new Chart(document.getElementById('multiYearIntensityChart'), {
+                type: 'line',
+                data: {
+                    labels: labels12,
+                    datasets: [
+                        { label: 'TOE/Jt Unit 2024', data: intensity2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'y' },
+                        { label: 'TOE/Jt Unit 2025', data: intensity2025, borderColor: '#2563eb', borderWidth: 2.5, pointRadius: 3, tension: 0.3, yAxisID: 'y' },
+                        { label: 'TOE/Jt Unit 2026', data: intensity2026.concat([null,null,null,null]), borderColor: '#7c3aed', borderWidth: 3, pointRadius: 4, tension: 0.3, yAxisID: 'y' },
+                        { label: 'Cost/Unit 2026 (Rp)', data: costUnit2026.concat([null,null,null,null]), borderColor: '#dc2626', borderWidth: 2, borderDash: [5,4], pointRadius: 3, tension: 0.3, yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } },
+                    scales: {
+                        y: { position: 'left', title: { display: true, text: 'TOE / Juta Unit', font: { size: 10 } }, grid: { color: '#f1f5f9' } },
+                        y1: { position: 'right', title: { display: true, text: 'Rp / unit (2026)', font: { size: 10 } }, grid: { drawOnChartArea: false } }
                     }
                 }
             });

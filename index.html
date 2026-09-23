@@ -13,6 +13,26 @@
         table { border-spacing: 0 4px; border-collapse: separate; }
         .tab-btn { transition: all 0.2s ease; cursor: pointer; }
         .tab-active { background-color: #2563eb !important; color: white !important; border-color: #2563eb !important; }
+        .sidebar-nav { width: 220px; flex-shrink: 0; }
+        .sidebar-link {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; text-align: left; padding: 10px 14px;
+            border-radius: 10px; font-size: 12px; font-weight: 600;
+            color: #cbd5e1; border: 1px solid transparent;
+            transition: all 0.15s ease; cursor: pointer; background: transparent;
+        }
+        .sidebar-link:hover { background: #1e293b; color: #fff; }
+        .sidebar-link.tab-active { background: #2563eb; color: #fff; border-color: #3b82f6; }
+        .sidebar-link .nav-num {
+            width: 22px; height: 22px; border-radius: 6px;
+            background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; flex-shrink: 0;
+        }
+        .sidebar-link.tab-active .nav-num { background: rgba(255,255,255,0.25); }
+        @media (max-width: 900px) {
+            .sidebar-nav { width: 100%; }
+            #appLayout { flex-direction: column !important; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -51,37 +71,48 @@
     </div>
 
     <!-- DASHBOARD (hidden until login) -->
-    <div id="dashboardRoot" class="max-w-7xl mx-auto space-y-6 hidden">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 p-6 rounded-2xl text-white shadow-lg space-y-4 md:space-y-0">
-            <div class="flex items-center space-x-4">
-                <div class="bg-red-700 text-white rounded-xl h-12 w-12 flex items-center justify-center font-bold text-lg">SCS</div>
-                <div>
-                    <h1 class="text-xl md:text-2xl font-bold leading-tight">Industrial Energy Control Center</h1>
-                    <p class="text-xs text-slate-400 mt-1">Laporan Operasional & Evaluasi Konsumsi Energi · Januari – Agustus 2026</p>
+    <div id="dashboardRoot" class="max-w-[1400px] mx-auto hidden">
+        <div id="appLayout" class="flex gap-5 items-start">
+            <!-- SIDEBAR -->
+            <aside class="sidebar-nav bg-slate-900 text-white rounded-2xl shadow-lg p-4 sticky top-4 flex flex-col gap-1">
+                <div class="flex items-center gap-3 px-2 pb-4 mb-2 border-b border-slate-700">
+                    <div class="bg-red-700 text-white rounded-xl h-10 w-10 flex items-center justify-center font-bold text-sm shrink-0">SCS</div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold leading-tight">Energy Control</p>
+                        <p class="text-[10px] text-slate-400 truncate">Jan – Agu 2026</p>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="flex flex-wrap gap-1 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-full md:w-auto">
-                <button onclick="switchTab(1)" id="btnTab1" class="tab-btn tab-active px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-transparent">
-                    Hal 1: Ringkasan
+                <button onclick="switchTab(1)" id="btnTab1" class="sidebar-link tab-btn tab-active">
+                    <span class="nav-num">1</span> Listrik FM
                 </button>
-                <button onclick="switchTab(2)" id="btnTab2" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
-                    Hal 2: Candy & SBC
+                <button onclick="switchTab(2)" id="btnTab2" class="sidebar-link tab-btn">
+                    <span class="nav-num">2</span> Listrik FD
                 </button>
-                <button onclick="switchTab(3)" id="btnTab3" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
-                    Hal 3: Solar
+                <button onclick="switchTab(3)" id="btnTab3" class="sidebar-link tab-btn">
+                    <span class="nav-num">3</span> PV
                 </button>
-                <button onclick="switchTab(4)" id="btnTab4" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
-                    Hal 4: Energi/Unit
+                <button onclick="switchTab(4)" id="btnTab4" class="sidebar-link tab-btn">
+                    <span class="nav-num">4</span> Energi / Unit
                 </button>
-                <button onclick="switchTab(5)" id="btnTab5" class="tab-btn px-3 py-2.5 text-xs font-bold rounded-lg text-slate-300 text-center border border-slate-600">
-                    Hal 5: Steam
+                <button onclick="switchTab(5)" id="btnTab5" class="sidebar-link tab-btn">
+                    <span class="nav-num">5</span> Steam
                 </button>
-                <button onclick="handleLogout()" class="px-3 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-600 transition-colors" title="Keluar">
-                    Logout
+                <button onclick="switchTab(6)" id="btnTab6" class="sidebar-link tab-btn">
+                    <span class="nav-num">6</span> Carbon Tax
                 </button>
-            </div>
-        </div>
+                <div class="mt-auto pt-4 border-t border-slate-700">
+                    <button onclick="handleLogout()" class="sidebar-link text-slate-400 hover:text-white w-full">
+                        <span class="nav-num">⎋</span> Logout
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="flex-1 min-w-0 space-y-6">
+                <div class="bg-slate-900 p-5 rounded-2xl text-white shadow-lg">
+                    <h1 class="text-xl md:text-2xl font-bold leading-tight" id="pageTitle">Industrial Energy Control Center</h1>
+                    <p class="text-xs text-slate-400 mt-1" id="pageSubtitle">Laporan Operasional &amp; Evaluasi Konsumsi Energi · Januari – Agustus 2026</p>
+                </div>
 
         <div id="page1" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -118,16 +149,16 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Analisis Pareto (80/20) - Lini Konsumsi Terbesar</h3>
-                    <div class="relative h-64"><canvas id="paretoChart"></canvas></div>
-                </div>
-                <div class="card">
-                    <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Korelasi Biaya Listrik vs Output Produksi</h3>
-                    <div class="relative h-64"><canvas id="secComboChart"></canvas></div>
-                    <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik (Rp Juta) | Garis Hijau: Volume Output Produksi </p>
-                </div>
+            <div class="card">
+                <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Analisis Pareto (80/20) - Semua Lini Konsumsi</h3>
+                <div class="relative h-80 w-full"><canvas id="paretoChart"></canvas></div>
+                <p id="paretoNote" class="text-[10px] text-gray-500 mt-2 italic text-center">Batang biru = lini yang berkontribusi hingga 80% biaya kumulatif · garis merah = % kumulatif terhadap total 8 bulan.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-sm font-bold text-slate-700 uppercase mb-4">Korelasi Biaya Listrik vs Output Produksi</h3>
+                <div class="relative h-64"><canvas id="secComboChart"></canvas></div>
+                <p class="text-[10px] text-gray-500 mt-2 italic text-center">*Batang Biru: Biaya Listrik (Rp Juta) | Garis Hijau: Volume Output Produksi </p>
             </div>
 
             <div class="card">
@@ -140,26 +171,55 @@
             </div>
 
             <div class="card overflow-x-auto">
-                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Matriks Konsumsi Energi Lini Produksi (Jan - Agu 2026)</h3>
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 border-b pb-3">
+                    <h3 class="text-sm font-bold text-gray-800">Heatmap Matriks Konsumsi Energi Lini Produksi</h3>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="search" id="heatmapSearch" placeholder="Cari nama lini…"
+                            class="px-3 py-1.5 text-xs rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 w-44">
+                        <select id="monthFrom" class="px-2 py-1.5 text-xs rounded-lg border border-gray-200 bg-white"></select>
+                        <span class="text-[10px] text-gray-400">s/d</span>
+                        <select id="monthTo" class="px-2 py-1.5 text-xs rounded-lg border border-gray-200 bg-white"></select>
+                        <button type="button" id="btnHmMode" class="px-2.5 py-1.5 text-[10px] font-bold rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50">
+                            Mode: Rp
+                        </button>
+                    </div>
+                </div>
                 <div class="min-w-[980px]">
-                    <table class="w-full text-left">
+                    <table class="w-full text-left" id="heatmapTable">
                         <thead>
                             <tr class="text-gray-400 text-[10px] uppercase border-b border-gray-200">
                                 <th class="w-8 text-center pb-2">#</th>
                                 <th class="pb-2">Lini Produksi / Operasional</th>
-                                <th class="text-center pb-2 w-14">JAN</th>
-                                <th class="text-center pb-2 w-14">FEB</th>
-                                <th class="text-center pb-2 w-14">MAR</th>
-                                <th class="text-center pb-2 w-14">APR</th>
-                                <th class="text-center pb-2 w-14">MEI</th>
-                                <th class="text-center pb-2 w-14">JUN</th>
-                                <th class="text-center pb-2 w-14">JUL</th>
-                                <th class="text-center pb-2 w-14">AGU</th>
-                                <th class="text-right pb-2 w-20">TREN (JAN-AGU)</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="0">JAN</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="1">FEB</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="2">MAR</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="3">APR</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="4">MEI</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="5">JUN</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="6">JUL</th>
+                                <th class="text-center pb-2 w-14 hm-month" data-mi="7">AGU</th>
+                                <th class="text-right pb-2 w-20 cursor-pointer select-none hover:text-blue-600" id="sortTren" title="Klik untuk urutkan">TREN ↕</th>
+                                <th class="text-right pb-2 w-20 cursor-pointer select-none hover:text-blue-600" id="sortVol" title="Klik untuk urutkan">VOLATILITAS ↕</th>
                             </tr>
                         </thead>
                         <tbody id="heatmapBody"></tbody>
                     </table>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-2">Klik nama lini untuk lihat tren 8 bulan · Sort TREN/VOLATILITAS · Mode Rp = nominal juta · Mode % = kontribusi thd total bulan</p>
+            </div>
+
+            <!-- Drill-down modal -->
+            <div id="lineModal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/40 p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-5 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Drill-down Lini</p>
+                            <h3 id="lineModalTitle" class="text-sm font-bold text-slate-900">-</h3>
+                        </div>
+                        <button type="button" id="lineModalClose" class="text-slate-400 hover:text-slate-700 text-lg font-bold leading-none">&times;</button>
+                    </div>
+                    <div class="relative h-56 w-full"><canvas id="lineModalChart"></canvas></div>
+                    <div id="lineModalStats" class="grid grid-cols-3 gap-2 text-center text-[11px]"></div>
                 </div>
             </div>
 
@@ -177,7 +237,7 @@
                         <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">1. Efisiensi Biaya & SEC Agustus</span>
                         <h4 class="text-sm font-bold text-slate-800">Biaya Absolute Turun, SEC Naik karena Chiller Elektrik</h4>
                         <p class="text-xs text-slate-600 leading-relaxed text-justify">
-                            Biaya listrik lini utama Agustus mencapai <strong>Rp 1,178 Miliar</strong> (−8,6% vs Juli Rp 1,288 Miliar) — <strong>titik terendah sepanjang 8 bulan</strong>. Solar panel <strong>1.125 kWp</strong> (COD 28 Juli) berkontribusi menekan tagihan PLN. Namun SEC naik ke <strong>Rp 20,77/unit</strong> dari Rp 19,55/unit di Juli karena output produksi turun (65,9 Jt → 55,1 Jt unit) dan beban chiller elektrik meningkat akibat krisis batu bara.
+                            Biaya listrik lini utama Agustus mencapai <strong id="narAugCost">Rp 1,178 Miliar</strong> (<span id="narAugTrend">−8,6% vs Juli</span>) — <strong>titik terendah sepanjang 8 bulan</strong>. Solar panel <strong>1.125 kWp</strong> (COD 28 Juli) berkontribusi menekan tagihan PLN. Namun SEC naik ke <strong id="narSecAug">Rp -/unit</strong> dari <span id="narSecJul">Rp -/unit</span> di Juli karena output produksi turun (<span id="narOutJul">-</span> → <span id="narOutAug">-</span> unit) dan beban chiller elektrik meningkat akibat krisis batu bara.
                         </p>
                     </div>
 
@@ -226,7 +286,7 @@
 
         <div id="page2" class="space-y-6 hidden">
             <div class="card overflow-x-auto">
-                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Konsumsi Energi Fasilitas Khusus: Gedung Candy & SBC (Jan - Agu 2026)</h3>
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Heatmap Konsumsi Energi Fasilitas Khusus: Gedung Candy & SBC (Jan - Agu 2026) <span class="text-[10px] font-normal text-gray-400 normal-case">· Klik nama gedung untuk drill-down</span></h3>
                 <div class="min-w-[980px]">
                     <table class="w-full text-left">
                         <thead>
@@ -248,6 +308,22 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Candy/SBC drill-down modal -->
+            <div id="candySbcModal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/40 p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-5 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Drill-down Gedung</p>
+                            <h3 id="candySbcModalTitle" class="text-sm font-bold text-slate-900">-</h3>
+                        </div>
+                        <button type="button" id="candySbcModalClose" class="text-slate-400 hover:text-slate-700 text-lg font-bold leading-none">&times;</button>
+                    </div>
+                    <div class="relative h-56 w-full"><canvas id="candySbcModalChart"></canvas></div>
+                    <div id="candySbcModalStats" class="grid grid-cols-3 gap-2 text-center text-[11px]"></div>
+                </div>
+            </div>
+
 
             <div class="card">
                 <h3 class="text-sm font-bold text-slate-700 uppercase mb-4 text-center">Komparasi Fluktuasi Biaya Bulanan: Gedung Candy vs Gedung SBC (Jan - Agu 2026)</h3>
@@ -418,14 +494,58 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card">
+            <!-- Hal 4 interactive toolbar -->
+            <div class="card py-3 px-4">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-3 flex-wrap">
+                    <div class="flex flex-wrap items-center gap-1.5" id="seuChips"></div>
+                    <div class="h-6 w-px bg-slate-200 hidden lg:block"></div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Metrik</span>
+                        <button type="button" data-metric="cpu" class="p4-metric px-2.5 py-1 text-[10px] font-bold rounded-lg bg-violet-600 text-white">Cost/Unit</button>
+                        <button type="button" data-metric="toe" class="p4-metric px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-100 text-slate-600">TOE</button>
+                        <button type="button" data-metric="both" class="p4-metric px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-100 text-slate-600">Keduanya</button>
+                    </div>
+                    <div class="h-6 w-px bg-slate-200 hidden lg:block"></div>
+                    <label class="flex items-center gap-2 text-[11px] text-slate-600 cursor-pointer select-none">
+                        <input type="checkbox" id="p4Highlight" class="rounded border-slate-300 text-violet-600 focus:ring-violet-500">
+                        <span>Highlight Jul→Agu</span>
+                    </label>
+                    <div class="h-6 w-px bg-slate-200 hidden lg:block"></div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">YOY</span>
+                        <select id="yoyMode" class="text-xs rounded-lg border border-gray-200 px-2 py-1 bg-white">
+                            <option value="all">2024 + 2025 + 2026</option>
+                            <option value="2425">2024 vs 2025</option>
+                            <option value="2526">2025 vs 2026</option>
+                            <option value="2426">2024 vs 2026</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="p4ChartRow">
+                <div class="card" id="p4CardCpu">
                     <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Biaya Energi per Unit Produk (Rp/unit) — per SEU</h3>
                     <div class="relative h-80 w-full"><canvas id="energyCpuChart"></canvas></div>
                 </div>
-                <div class="card">
+                <div class="card" id="p4CardToe">
                     <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Total Energy Used (TOE) — per Bulan per Lini Produksi</h3>
                     <div class="relative h-80 w-full"><canvas id="energyToeChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- SEU drill-down modal -->
+            <div id="seuModal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/40 p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-5 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Drill-down SEU</p>
+                            <h3 id="seuModalTitle" class="text-sm font-bold text-slate-900">-</h3>
+                        </div>
+                        <button type="button" id="seuModalClose" class="text-slate-400 hover:text-slate-700 text-lg font-bold leading-none">&times;</button>
+                    </div>
+                    <div class="relative h-56 w-full"><canvas id="seuModalChart"></canvas></div>
+                    <div id="seuModalStats" class="grid grid-cols-3 gap-2 text-center text-[11px]"></div>
                 </div>
             </div>
 
@@ -672,6 +792,114 @@
             </div>
         </div>
 
+
+        <div id="page6" class="space-y-6 hidden">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-xs text-emerald-900 leading-relaxed space-y-1">
+                <p><strong>Dasar hukum (DJP / UU HPP):</strong> Tarif pajak karbon paling rendah <strong>Rp 30 per kg CO₂e</strong> (= <strong>Rp 30.000 per ton CO₂e</strong>). Tarif ditetapkan ≥ harga karbon di pasar karbon domestik; jika harga pasar lebih rendah, berlaku batas bawah Rp 30/kg CO₂e. Sumber: artikel DJP &amp; UU No. 7/2021 tentang Harmonisasi Peraturan Perpajakan.</p>
+                <p><strong>Estimasi emisi boiler batubara:</strong> Faktor emisi default <strong>1,83 tCO₂e / ton batubara</strong> (pendekatan IPCC sub-bituminous). Nilai resmi faktor emisi mengikuti penetapan kementerian/lembaga berwenang — halaman ini untuk <em>simulasi &amp; awareness biaya</em>, bukan surat ketetapan pajak.</p>
+                <p><strong>Rumus:</strong> Pajak karbon (Rp) = Ton batubara × 1,83 × Rp 30.000</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="card border-t-4 border-emerald-600">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Batubara 8 Bulan</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="ctCoalTotal">-</h2>
+                    <p class="text-xs text-gray-400 mt-1">Ton (semua SEU ber-batubara)</p>
+                </div>
+                <div class="card border-t-4 border-teal-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Estimasi Emisi CO₂e</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="ctEmitTotal">-</h2>
+                    <p class="text-xs text-gray-400 mt-1">Ton CO₂e (EF 1,83)</p>
+                </div>
+                <div class="card border-t-4 border-lime-600">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Estimasi Carbon Tax 8 Bln</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="ctTaxTotal">-</h2>
+                    <p class="text-xs text-gray-400 mt-1">@ Rp 30.000 / tCO₂e</p>
+                </div>
+                <div class="card border-t-4 border-amber-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Carbon Tax Agustus</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mt-2" id="ctTaxAug">-</h2>
+                    <p class="text-xs text-gray-400 mt-1" id="ctTaxAugTrend">vs Juli</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Pemakaian Batubara (ton) per Bulan</h3>
+                    <div class="relative h-72 w-full"><canvas id="ctCoalChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Estimasi Carbon Tax (Rp Juta) per Bulan</h3>
+                    <div class="relative h-72 w-full"><canvas id="ctTaxChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Emisi CO₂e &amp; Carbon Tax per SEU (Jan–Agu 2026)</h3>
+                <div class="relative h-72 w-full"><canvas id="ctSeuChart"></canvas></div>
+            </div>
+
+            <div class="card overflow-x-auto">
+                <h3 class="text-sm font-bold text-gray-800 mb-4 border-b pb-2">Detail: Batubara → Emisi → Pajak Karbon</h3>
+                <div class="min-w-[900px]">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="text-gray-400 text-[10px] uppercase border-b">
+                                <th class="pb-2">SEU</th>
+                                <th class="text-right pb-2">JAN</th>
+                                <th class="text-right pb-2">FEB</th>
+                                <th class="text-right pb-2">MAR</th>
+                                <th class="text-right pb-2">APR</th>
+                                <th class="text-right pb-2">MEI</th>
+                                <th class="text-right pb-2">JUN</th>
+                                <th class="text-right pb-2">JUL</th>
+                                <th class="text-right pb-2">AGU</th>
+                                <th class="text-right pb-2">Total ton</th>
+                                <th class="text-right pb-2">tCO₂e</th>
+                                <th class="text-right pb-2">Tax (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ctTableBody"></tbody>
+                    </table>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-2">Nilai sel = ton batubara. SBC tidak ditampilkan (dominan gas/diesel, batubara ≈ 0 pada data sumber).</p>
+            </div>
+
+            <div class="card bg-slate-50 border border-slate-200 space-y-4">
+                <div class="flex items-center space-x-2 border-b border-slate-200 pb-3">
+                    <span class="p-2 bg-emerald-700 text-white rounded-lg text-xs font-bold">ANALISIS CARBON TAX</span>
+                    <h3 class="text-base font-bold text-slate-900">Implikasi Biaya dari Pembakaran Batubara Boiler</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600 leading-relaxed">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <h4 class="text-sm font-bold text-slate-800">1. Lonjakan Agustus</h4>
+                        <p class="text-justify">
+                            Pemakaian batubara dan estimasi carbon tax <strong>naik tajam di Agustus</strong>, sejalan dengan narasi krisis batubara kalori rendah
+                            (volume bakar naik untuk menghasilkan energi termal yang sama). Ini menambah beban biaya di atas tagihan energi konvensional.
+                        </p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <h4 class="text-sm font-bold text-slate-800">2. SEU penyumbang utama</h4>
+                        <p class="text-justify">
+                            <strong>Pharma 1</strong>, <strong>Candy</strong>, dan <strong>Natpro</strong> mendominasi tonase batubara.
+                            Fokus efisiensi boiler, kualitas batubara (kalori lebih tinggi), dan substitusi (termasuk solar thermal / optimalisasi chiller)
+                            paling berdampak pada pengurangan eksposur carbon tax.
+                        </p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 md:col-span-2">
+                        <h4 class="text-sm font-bold text-slate-800">3. Catatan kepatuhan</h4>
+                        <p class="text-justify">
+                            Implementasi pajak karbon di Indonesia bersifat bertahap (cap-and-tax, prioritas awal PLTU batubara) dan dapat melibatkan perdagangan karbon
+                            sebelum pembayaran pajak. Angka di halaman ini adalah <strong>simulasi eksposur</strong> bila seluruh emisi dari batubara boiler dihitung pada tarif minimum.
+                            Konsultasikan dengan tax/compliance untuk treatment aktual fasilitas industri non-PLTU.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            </main>
+        </div>
     </div>
 
     <script>
@@ -732,26 +960,34 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
         }
 
-        function switchTab(num) {
-            for (let i = 1; i <= 5; i++) {
+                function switchTab(num) {
+            const titles = {
+                1: ['Hal 1 · Listrik FM', 'Biaya listrik lini produksi · Jan – Agu 2026'],
+                2: ['Hal 2 · Listrik FD', 'Konsumsi energi gedung Candy dan SBC · Jan – Agu 2026'],
+                3: ['Hal 3 · PV', 'Perolehan kWh & penghematan solar 1.125 kWp · sejak 28 Juli 2026'],
+                4: ['Hal 4 · Energi per Unit Produk', 'TOE, cost/unit, dan perbandingan multi-tahun · Jan – Agu 2026'],
+                5: ['Hal 5 · Konsumsi Steam', 'Monitoring steam Spirax Sarco · KPI per titik pengukuran'],
+                6: ['Hal 6 · Carbon Tax', 'Simulasi pajak karbon dari pembakaran batubara boiler · tarif min. Rp 30.000/tCO₂e']
+            };
+            for (let i = 1; i <= 6; i++) {
                 const page = document.getElementById('page' + i);
                 const btn = document.getElementById('btnTab' + i);
                 if (!page || !btn) continue;
                 if (i === num) {
                     page.classList.remove('hidden');
                     btn.classList.add('tab-active');
-                    btn.classList.remove('border-slate-600');
                 } else {
                     page.classList.add('hidden');
                     btn.classList.remove('tab-active');
-                    btn.classList.add('border-slate-600');
                 }
             }
-            setTimeout(() => {
-                Object.values(charts).forEach(chart => {
-                    if (chart && typeof chart.resize === 'function') chart.resize();
-                });
-            }, 50);
+            const t = titles[num];
+            if (t) {
+                const pt = document.getElementById('pageTitle');
+                const ps = document.getElementById('pageSubtitle');
+                if (pt) pt.innerText = t[0];
+                if (ps) ps.innerText = t[1];
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -782,7 +1018,7 @@
             ];
 
             // Output produksi hanya tersedia s/d Juli
-            const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 65897121, 55109179];
+            const outputProduksi = [64648899, 56379105, 35711352, 47251571, 49488146, 55132864, 70794613, 55109179];
             const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu'];
             const labels7 = labels; // now 8 months
 
@@ -811,29 +1047,181 @@
             document.getElementById('kpiLowestMonth').innerText = formatIDR(minVal);
             document.getElementById('kpiLowestName').innerText = monthNames[minIdx];
 
-            // Render Heatmap Lini Utama
-            const tbody = document.getElementById('heatmapBody');
-            if (tbody) {
-                rawData.forEach((item, index) => {
-                    let tr = document.createElement('tr');
-                    tr.className = "border-b border-gray-100 hover:bg-gray-50";
-                    let displayName = item.name.length > 36 ? item.name.substring(0,36) + '...' : item.name;
+            // ===== Interactive Heatmap =====
+            const hmState = { mode: 'rp', sortKey: null, sortDir: 1, from: 0, to: 7, query: '' };
+            let lineModalChartInst = null;
 
-                    let cells = `<td class="p-2 text-xs text-gray-500 text-center font-medium">${index + 1}</td>
-                                 <td class="p-2 text-xs font-semibold text-gray-700" title="${item.name}">${displayName}</td>`;
-                    item.data.forEach(val => {
-                        let jtn = Math.round(val / 1000000);
-                        let bg = val > 150000000 ? 'bg-blue-600 text-white' : (val > 100000000 ? 'bg-blue-500 text-white' : (val > 50000000 ? 'bg-blue-300 text-gray-800' : 'bg-blue-50 text-gray-800'));
-                        cells += `<td class="p-1"><div class="text-center text-xs font-bold rounded py-1 ${bg}">${jtn}Jt</div></td>`;
+            function lineVolatility(data) {
+                const vals = data.map(v => v / 1e6);
+                const mean = vals.reduce((a,b)=>a+b,0) / vals.length;
+                if (mean === 0) return 0;
+                const variance = vals.reduce((s,v)=>s+Math.pow(v-mean,2),0) / vals.length;
+                return Math.sqrt(variance) / mean * 100; // CV %
+            }
+            function lineTrend(data, from, to) {
+                const first = data[from], last = data[to];
+                return first > 0 ? Math.round(((last - first) / first) * 100) : 0;
+            }
+            function monthTotalsInRange() {
+                const tot = Array(8).fill(0);
+                rawData.forEach(item => item.data.forEach((v,i) => { tot[i] += v; }));
+                return tot;
+            }
+
+            function renderHeatmap() {
+                const tbody = document.getElementById('heatmapBody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                const monthTot = monthTotalsInRange();
+                const from = hmState.from, to = hmState.to;
+                let rows = rawData.map((item, index) => ({
+                    index, item,
+                    trend: lineTrend(item.data, from, to),
+                    vol: lineVolatility(item.data.slice(from, to+1))
+                }));
+                if (hmState.search) {
+                    const q = hmState.search.toLowerCase();
+                    rows = rows.filter(r => r.item.name.toLowerCase().includes(q));
+                }
+                if (hmState.sortKey === 'tren') {
+                    rows.sort((a,b) => (a.trend - b.trend) * hmState.sortDir);
+                } else if (hmState.sortKey === 'vol') {
+                    rows.sort((a,b) => (a.vol - b.vol) * hmState.sortDir);
+                }
+                // show/hide month columns
+                document.querySelectorAll('.hm-month').forEach(th => {
+                    const mi = +th.dataset.mi;
+                    th.style.display = (mi >= from && mi <= to) ? '' : 'none';
+                });
+                rows.forEach((r, displayIdx) => {
+                    const item = r.item;
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-gray-100 hover:bg-blue-50/50';
+                    const displayName = item.name.length > 34 ? item.name.substring(0,34) + '…' : item.name;
+                    let cells = `<td class="p-2 text-xs text-gray-500 text-center font-medium">${displayIdx + 1}</td>
+                        <td class="p-2 text-xs font-semibold text-blue-700 cursor-pointer hover:underline" title="Klik untuk drill-down: ${item.name}" data-line-idx="${r.index}">${displayName}</td>`;
+                    item.data.forEach((val, mi) => {
+                        if (mi < from || mi > to) {
+                            cells += `<td class="p-1" style="display:none"></td>`;
+                            return;
+                        }
+                        let content, bg;
+                        if (hmState.mode === 'pct') {
+                            const pct = monthTot[mi] > 0 ? (val / monthTot[mi] * 100) : 0;
+                            content = pct.toFixed(1) + '%';
+                            bg = pct > 15 ? 'bg-blue-600 text-white' : (pct > 10 ? 'bg-blue-500 text-white' : (pct > 5 ? 'bg-blue-300 text-gray-800' : 'bg-blue-50 text-gray-800'));
+                        } else {
+                            const jtn = Math.round(val / 1e6);
+                            content = jtn + 'Jt';
+                            bg = val > 150e6 ? 'bg-blue-600 text-white' : (val > 100e6 ? 'bg-blue-500 text-white' : (val > 50e6 ? 'bg-blue-300 text-gray-800' : 'bg-blue-50 text-gray-800'));
+                        }
+                        cells += `<td class="p-1"><div class="text-center text-xs font-bold rounded py-1 ${bg}">${content}</div></td>`;
                     });
-                    let first = item.data[0], last = item.data[7];
-                    let trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
-                    let tColor = trend < 0 ? 'text-green-600' : (trend > 0 ? 'text-red-600' : 'text-gray-500');
-                    cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
+                    const tColor = r.trend < 0 ? 'text-green-600' : (r.trend > 0 ? 'text-red-600' : 'text-gray-500');
+                    cells += `<td class="p-2 text-xs font-bold text-right ${tColor}">${r.trend > 0 ? '+' + r.trend : r.trend}%</td>`;
+                    cells += `<td class="p-2 text-xs font-bold text-right text-slate-600">${r.vol.toFixed(0)}%</td>`;
                     tr.innerHTML = cells;
                     tbody.appendChild(tr);
                 });
             }
+
+            function openLineModal(idx) {
+                const item = rawData[idx];
+                if (!item) return;
+                const modal = document.getElementById('lineModal');
+                document.getElementById('lineModalTitle').innerText = item.name;
+                const trend = lineTrend(item.data, 0, 7);
+                const vol = lineVolatility(item.data);
+                const total = item.data.reduce((a,b)=>a+b,0);
+                document.getElementById('lineModalStats').innerHTML = `
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Total 8 bln</p><p class="font-bold text-slate-800">${formatIDR(total)}</p></div>
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Tren Jan→Agu</p><p class="font-bold ${trend<0?'text-green-600':'text-red-600'}">${trend>0?'+':''}${trend}%</p></div>
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Volatilitas</p><p class="font-bold text-slate-800">${vol.toFixed(1)}%</p></div>`;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (lineModalChartInst) lineModalChartInst.destroy();
+                lineModalChartInst = new Chart(document.getElementById('lineModalChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Biaya (Rp Juta)',
+                            data: item.data.map(v => Math.round(v/1e6)),
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37,99,235,0.1)',
+                            fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#2563eb'
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { title: { display: true, text: 'Rp Juta', font: { size: 10 } }, grid: { color: '#f1f5f9' } } }
+                    }
+                });
+            }
+            function closeLineModal() {
+                const modal = document.getElementById('lineModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+
+            // Init month selectors
+            (function initHmControls() {
+                const labelsFull = labels;
+                ['monthFrom','monthTo'].forEach(id => {
+                    const sel = document.getElementById(id);
+                    if (!sel) return;
+                    labelsFull.forEach((lb, i) => {
+                        const opt = document.createElement('option');
+                        opt.value = i; opt.textContent = lb;
+                        sel.appendChild(opt);
+                    });
+                });
+                const mf = document.getElementById('monthFrom');
+                const mt = document.getElementById('monthTo');
+                if (mf) mf.value = 0;
+                if (mt) mt.value = 7;
+                if (mf) mf.addEventListener('change', () => {
+                    hmState.from = +mf.value;
+                    if (hmState.from > hmState.to) { hmState.to = hmState.from; mt.value = hmState.to; }
+                    renderHeatmap();
+                });
+                if (mt) mt.addEventListener('change', () => {
+                    hmState.to = +mt.value;
+                    if (hmState.to < hmState.from) { hmState.from = hmState.to; mf.value = hmState.from; }
+                    renderHeatmap();
+                });
+                const search = document.getElementById('heatmapSearch');
+                if (search) search.addEventListener('input', () => { hmState.search = search.value.trim(); renderHeatmap(); });
+                const btnMode = document.getElementById('btnHmMode');
+                if (btnMode) btnMode.addEventListener('click', () => {
+                    hmState.mode = hmState.mode === 'rp' ? 'pct' : 'rp';
+                    btnMode.textContent = 'Mode: ' + (hmState.mode === 'rp' ? 'Rp' : '%');
+                    renderHeatmap();
+                });
+                const st = document.getElementById('sortTren');
+                if (st) st.addEventListener('click', () => {
+                    if (hmState.sortKey === 'tren') hmState.sortDir *= -1; else { hmState.sortKey = 'tren'; hmState.sortDir = -1; }
+                    st.textContent = 'TREN ' + (hmState.sortDir > 0 ? '↑' : '↓');
+                    document.getElementById('sortVol').textContent = 'VOLATILITAS ↕';
+                    renderHeatmap();
+                });
+                const sv = document.getElementById('sortVol');
+                if (sv) sv.addEventListener('click', () => {
+                    if (hmState.sortKey === 'vol') hmState.sortDir *= -1; else { hmState.sortKey = 'vol'; hmState.sortDir = -1; }
+                    sv.textContent = 'VOLATILITAS ' + (hmState.sortDir > 0 ? '↑' : '↓');
+                    document.getElementById('sortTren').textContent = 'TREN ↕';
+                    renderHeatmap();
+                });
+                document.getElementById('heatmapBody')?.addEventListener('click', (e) => {
+                    const td = e.target.closest('[data-line-idx]');
+                    if (td) openLineModal(+td.dataset.lineIdx);
+                });
+                document.getElementById('lineModalClose')?.addEventListener('click', closeLineModal);
+                document.getElementById('lineModal')?.addEventListener('click', (e) => { if (e.target.id === 'lineModal') closeLineModal(); });
+            })();
+
+            renderHeatmap();
 
             // Proporsi & Pareto Dinamis (8 bulan)
             let lineTotals = rawData.map(item => ({
@@ -850,8 +1238,19 @@
             let pieDataArr = top5.map(t => t.total);
             pieDataArr.push(othersTotal);
 
-            let paretoLabels = top5.map(t => t.name);
-            let paretoDataArr = top5.map(t => Math.round(t.total/1000000));
+            // Pareto sesungguhnya: semua lini diurut turun + garis kumulatif %
+            const grandTotalCost = lineTotals.reduce((s, t) => s + t.total, 0);
+            let paretoLabels = lineTotals.map(t => t.name);
+            let paretoDataArr = lineTotals.map(t => Math.round(t.total / 1000000));
+            let paretoCumPct = [];
+            let runningCum = 0;
+            lineTotals.forEach(t => {
+                runningCum += t.total;
+                paretoCumPct.push(+(runningCum / grandTotalCost * 100).toFixed(1));
+            });
+            const paretoCut80 = paretoCumPct.findIndex(p => p >= 80) + 1;
+            const paretoNoteEl = document.getElementById('paretoNote');
+            if (paretoNoteEl) paretoNoteEl.innerText = `${paretoCut80} dari ${lineTotals.length} lini/pos biaya menyumbang ≥80% total biaya energi 8 bulan — sisanya (${lineTotals.length - paretoCut80} pos) berwarna abu-abu di chart.`;
 
             const monthlyTotalsJuta = monthlyTotals.map(v => Math.round(v / 1000000));
 
@@ -860,6 +1259,22 @@
                 const out = outputProduksi[i];
                 return out > 0 ? +(cost / out).toFixed(2) : null;
             });
+
+            // Sinkronkan narasi eksekutif Hal 1 dengan angka hasil hitung
+            const idFmt2 = (v) => v.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const idFmtUnit = (v) => (v / 1e6).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' Jt';
+            const narAugCostEl = document.getElementById('narAugCost');
+            if (narAugCostEl) narAugCostEl.innerText = formatIDR(monthlyTotals[7]);
+            const narAugTrendEl = document.getElementById('narAugTrend');
+            if (narAugTrendEl) narAugTrendEl.innerText = (augDiff >= 0 ? '+' : '') + idFmt2(augDiff) + '% vs Juli Rp ' + (monthlyTotals[6]/1e9).toFixed(3).replace('.', ',') + ' Miliar';
+            const narSecAugEl = document.getElementById('narSecAug');
+            if (narSecAugEl) narSecAugEl.innerText = 'Rp ' + idFmt2(secPerUnit[7]) + '/unit';
+            const narSecJulEl = document.getElementById('narSecJul');
+            if (narSecJulEl) narSecJulEl.innerText = 'Rp ' + idFmt2(secPerUnit[6]) + '/unit';
+            const narOutJulEl = document.getElementById('narOutJul');
+            if (narOutJulEl) narOutJulEl.innerText = idFmtUnit(outputProduksi[6]);
+            const narOutAugEl = document.getElementById('narOutAug');
+            if (narOutAugEl) narOutAugEl.innerText = idFmtUnit(outputProduksi[7]);
 
             charts.c1 = new Chart(document.getElementById('trendBulanan'), { 
                 type: 'line', 
@@ -911,24 +1326,67 @@
                 } 
             });
 
-            charts.c4 = new Chart(document.getElementById('paretoChart'), { 
-                type: 'bar', 
-                data: { 
-                    labels: paretoLabels, 
-                    datasets: [{ 
-                        label: 'Total Akumulasi Cost (Juta Rp)', 
-                        data: paretoDataArr, 
-                        backgroundColor: '#2563eb', 
-                        borderRadius: 4 
-                    }] 
-                }, 
-                options: { 
-                    responsive: true, 
+            charts.pareto = new Chart(document.getElementById('paretoChart'), {
+                data: {
+                    labels: paretoLabels,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Total Cost 8 Bulan (Juta Rp)',
+                            data: paretoDataArr,
+                            backgroundColor: paretoLabels.map((_, i) => i < paretoCut80 ? '#2563eb' : '#cbd5e1'),
+                            borderRadius: 4,
+                            yAxisID: 'y',
+                            order: 2
+                        },
+                        {
+                            type: 'line',
+                            label: 'Kumulatif %',
+                            data: paretoCumPct,
+                            borderColor: '#dc2626',
+                            backgroundColor: '#dc2626',
+                            borderWidth: 2.5,
+                            pointRadius: 3,
+                            tension: 0.15,
+                            yAxisID: 'y1',
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: { display: false }
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                afterBody: (items) => {
+                                    if (items[0].dataIndex === paretoCut80 - 1) return `← Titik 80% biaya tercapai di lini ke-${paretoCut80} dari ${paretoLabels.length}`;
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { maxRotation: 90, minRotation: 60, font: { size: 8 }, autoSkip: false }
+                        },
+                        y: {
+                            position: 'left',
+                            title: { display: true, text: 'Juta Rp', font: { size: 10 } },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y1: {
+                            position: 'right',
+                            min: 0,
+                            max: 100,
+                            title: { display: true, text: 'Kumulatif %', font: { size: 10 } },
+                            grid: { drawOnChartArea: false },
+                            ticks: { callback: (v) => v + '%' }
+                        }
                     }
-                } 
+                }
             });
             
             // Combo chart Biaya vs Output Produksi (Jan - Agu)
@@ -1037,12 +1495,54 @@
             ];
 
             const tbodyCandySbc = document.getElementById('heatmapCandySbcBody');
+            let candySbcModalChartInst = null;
+            function openCandySbcModal(idx) {
+                const item = candySbcRows[idx];
+                if (!item) return;
+                const modal = document.getElementById('candySbcModal');
+                document.getElementById('candySbcModalTitle').innerText = item.name;
+                const first = item.data[0], last = item.data[7];
+                const trend = first > 0 ? Math.round(((last - first) / first) * 100) : 0;
+                const total = item.data.reduce((a,b)=>a+b,0);
+                const peak = Math.max(...item.data);
+                document.getElementById('candySbcModalStats').innerHTML = `
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Total 8 bln</p><p class="font-bold text-slate-800">${formatIDR(total)}</p></div>
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Tren Jan→Agu</p><p class="font-bold ${trend<0?'text-green-600':'text-red-600'}">${trend>0?'+':''}${trend}%</p></div>
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Peak bulan</p><p class="font-bold text-slate-800">${formatIDR(peak)}</p></div>`;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (candySbcModalChartInst) candySbcModalChartInst.destroy();
+                const border = item.name.includes('Candy') ? '#db2777' : '#4f46e5';
+                candySbcModalChartInst = new Chart(document.getElementById('candySbcModalChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Biaya (Rp Juta)',
+                            data: item.data.map(v => Math.round(v/1e6)),
+                            borderColor: border,
+                            backgroundColor: border + '18',
+                            fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: border, borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { title: { display: true, text: 'Rp Juta', font: { size: 10 } }, grid: { color: '#f1f5f9' } } }
+                    }
+                });
+            }
+            function closeCandySbcModal() {
+                const modal = document.getElementById('candySbcModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
             if (tbodyCandySbc) {
                 candySbcRows.forEach((item, index) => {
                     let tr = document.createElement('tr');
-                    tr.className = "border-b border-gray-100 hover:bg-gray-50";
+                    tr.className = "border-b border-gray-100 hover:bg-pink-50/40";
                     let cells = `<td class="p-2 text-xs text-gray-500 text-center font-medium">${index + 1}</td>
-                                 <td class="p-2 text-xs font-bold text-gray-800">${item.name}</td>`;
+                                 <td class="p-2 text-xs font-bold text-blue-700 cursor-pointer hover:underline" data-cs-idx="${index}" title="Klik untuk drill-down">${item.name}</td>`;
                     item.data.forEach(val => {
                         let jtn = Math.round(val / 1000000);
                         cells += `<td class="p-1"><div class="text-center text-xs font-bold rounded py-1 ${item.color}">${jtn}Jt</div></td>`;
@@ -1053,6 +1553,14 @@
                     cells += `<td class="p-2 text-xs font-bold text-right ${tColor} bg-gray-50 rounded">${trend > 0 ? '+' + trend : trend}%</td>`;
                     tr.innerHTML = cells;
                     tbodyCandySbc.appendChild(tr);
+                });
+                tbodyCandySbc.addEventListener('click', (e) => {
+                    const td = e.target.closest('[data-cs-idx]');
+                    if (td) openCandySbcModal(+td.dataset.csIdx);
+                });
+                document.getElementById('candySbcModalClose')?.addEventListener('click', closeCandySbcModal);
+                document.getElementById('candySbcModal')?.addEventListener('click', (e) => {
+                    if (e.target.id === 'candySbcModal') closeCandySbcModal();
                 });
             }
 
@@ -1231,7 +1739,7 @@
                 });
             });
 
-            // KPIs
+            // KPIs (full set)
             let totalEnCost = 0;
             let monthCost = [0,0,0,0,0,0,0,0];
             let monthOut = [0,0,0,0,0,0,0,0];
@@ -1248,15 +1756,176 @@
             trEl.className = 'text-xs font-bold mt-1 ' + (cpuDiff <= 0 ? 'text-green-600' : 'text-red-600');
             document.getElementById('kpiEnBest').innerText = 'Rp ' + monthCpu[6].toFixed(2);
 
-            // Table — Total Energy Used (TOE)
-            const enBody = document.getElementById('energyCpuBody');
-            if (enBody) {
-                seuNames.forEach(s => {
+            // ===== Hal 4 interactive state =====
+            const p4State = {
+                seu: Object.fromEntries(seuNames.map(s => [s, true])),
+                metric: 'both',
+                highlight: false
+            };
+            let seuModalChartInst = null;
+
+            function p4ActiveSeu() { return seuNames.filter(s => p4State.seu[s]); }
+
+            function p4PointRadius() {
+                if (!p4State.highlight) return 3;
+                return labels.map((_, i) => (i === 6 || i === 7) ? 6 : 3);
+            }
+            function p4BorderWidth() {
+                if (!p4State.highlight) return 2;
+                return 2;
+            }
+            function p4SegmentHighlight(ctx) {
+                // thicken Jul-Agu segment when highlight on
+                if (!p4State.highlight) return 2;
+                const i = ctx.p0DataIndex;
+                return (i === 6 || i === 5) ? 4 : 2; // segment into Jul and into Agu
+            }
+
+            function renderP4Charts() {
+                const active = p4ActiveSeu();
+                const cardCpu = document.getElementById('p4CardCpu');
+                const cardToe = document.getElementById('p4CardToe');
+                if (p4State.metric === 'cpu') { cardCpu.style.display = ''; cardToe.style.display = 'none'; cardCpu.className = 'card md:col-span-2'; }
+                else if (p4State.metric === 'toe') { cardCpu.style.display = 'none'; cardToe.style.display = ''; cardToe.className = 'card md:col-span-2'; }
+                else { cardCpu.style.display = ''; cardToe.style.display = ''; cardCpu.className = 'card'; cardToe.className = 'card'; }
+
+                const pr = p4PointRadius();
+
+                if (charts.energyCpu) charts.energyCpu.destroy();
+                charts.energyCpu = new Chart(document.getElementById('energyCpuChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: active.map(s => ({
+                            label: s,
+                            data: energyCpu[s],
+                            borderColor: seuColors[s],
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointRadius: pr,
+                            pointBackgroundColor: seuColors[s],
+                            tension: 0.25,
+                            segment: {
+                                borderWidth: ctx => p4State.highlight && (ctx.p0DataIndex >= 5) ? 4 : 2
+                            }
+                        }))
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                            annotation: undefined
+                        },
+                        scales: {
+                            y: { title: { display: true, text: 'Rp / unit', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+
+                if (charts.energyToe) charts.energyToe.destroy();
+                charts.energyToe = new Chart(document.getElementById('energyToeChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: active.map(s => ({
+                            label: s,
+                            data: energySEU[s].toe,
+                            borderColor: seuColors[s],
+                            backgroundColor: 'transparent',
+                            borderWidth: 2.5,
+                            pointRadius: pr,
+                            pointBackgroundColor: seuColors[s],
+                            tension: 0.3,
+                            segment: {
+                                borderWidth: ctx => p4State.highlight && (ctx.p0DataIndex >= 5) ? 4 : 2.5
+                            }
+                        }))
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' TOE' } }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: 'Bulan', font: { size: 10 } } },
+                            y: { title: { display: true, text: 'Total Energy Used (TOE)', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+
+                // Output vs TOE — filtered SEU aggregate
+                const totOut = labels.map((_, i) => active.reduce((s, n) => s + energySEU[n].output[i], 0));
+                const totToe = labels.map((_, i) => active.reduce((s, n) => s + energySEU[n].toe[i], 0));
+                if (charts.outputVsToe) charts.outputVsToe.destroy();
+                charts.outputVsToe = new Chart(document.getElementById('outputVsToeChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Total Output Produksi',
+                                data: totOut,
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                                borderWidth: 3, pointRadius: pr, pointBackgroundColor: '#10b981',
+                                tension: 0.3, yAxisID: 'y', fill: true
+                            },
+                            {
+                                label: 'Total TOE',
+                                data: totToe,
+                                borderColor: '#7c3aed',
+                                backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                                borderWidth: 3, pointRadius: pr, pointBackgroundColor: '#7c3aed',
+                                tension: 0.3, yAxisID: 'y1', fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => ctx.dataset.yAxisID === 'y'
+                                        ? 'Output: ' + (ctx.parsed.y / 1e6).toFixed(2) + ' Juta unit'
+                                        : 'TOE: ' + ctx.parsed.y + ' TOE'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear', position: 'left',
+                                title: { display: true, text: 'Output (unit)', font: { size: 10 } },
+                                ticks: { callback: (v) => (v / 1e6).toFixed(0) + 'M' },
+                                grid: { color: '#f1f5f9' }
+                            },
+                            y1: {
+                                type: 'linear', position: 'right',
+                                title: { display: true, text: 'TOE', font: { size: 10 } },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+
+                // expose for multi-year intensity cost unit 2026
+                window._p4TotalOut = totOut;
+                window._p4TotalToe = totToe;
+            }
+
+            function renderP4Table() {
+                const enBody = document.getElementById('energyCpuBody');
+                if (!enBody) return;
+                enBody.innerHTML = '';
+                p4ActiveSeu().forEach(s => {
                     const tr = document.createElement('tr');
-                    tr.className = 'border-b border-gray-100 hover:bg-gray-50';
-                    let cells = `<td class="py-2 pr-2 font-semibold text-gray-700">${s}</td>`;
-                    energySEU[s].toe.forEach(v => {
-                        const bg = v >= 150 ? 'bg-red-100 text-red-800' : (v >= 100 ? 'bg-amber-100 text-amber-800' : (v >= 70 ? 'bg-yellow-50 text-gray-800' : 'bg-green-50 text-green-800'));
+                    tr.className = 'border-b border-gray-100 hover:bg-violet-50/50';
+                    let cells = `<td class="py-2 pr-2 font-semibold text-violet-700 cursor-pointer hover:underline" data-seu="${s}" title="Klik untuk drill-down">${s}</td>`;
+                    energySEU[s].toe.forEach((v, i) => {
+                        let bg = v >= 150 ? 'bg-red-100 text-red-800' : (v >= 100 ? 'bg-amber-100 text-amber-800' : (v >= 70 ? 'bg-yellow-50 text-gray-800' : 'bg-green-50 text-green-800'));
+                        if (p4State.highlight && (i === 6 || i === 7)) bg += ' ring-2 ring-violet-400';
                         cells += `<td class="p-1"><div class="text-center text-[11px] font-bold rounded py-1 ${bg}">${v}</div></td>`;
                     });
                     const dlt = energySEU[s].toe[6] > 0 ? ((energySEU[s].toe[7] - energySEU[s].toe[6]) / energySEU[s].toe[6] * 100) : 0;
@@ -1267,236 +1936,191 @@
                 });
             }
 
-            // Line chart cost/unit
-            charts.energyCpu = new Chart(document.getElementById('energyCpuChart'), {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: seuNames.map(s => ({
-                        label: s,
-                        data: energyCpu[s],
-                        borderColor: seuColors[s],
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        tension: 0.25
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
-                    scales: {
-                        y: {
-                            title: { display: true, text: 'Rp / unit', font: { size: 10 } },
-                            grid: { color: '#f1f5f9' }
-                        }
-                    }
-                }
-            });
-
-            // Total Energy Used (TOE) per bulan per lini — line chart
-            charts.energyToe = new Chart(document.getElementById('energyToeChart'), {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: seuNames.map(s => ({
-                        label: s,
-                        data: energySEU[s].toe,
-                        borderColor: seuColors[s],
-                        backgroundColor: 'transparent',
-                        borderWidth: 2.5,
-                        pointRadius: 4,
-                        pointBackgroundColor: seuColors[s],
-                        tension: 0.3
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' TOE'
-                            }
-                        }
+            function openSeuModal(s) {
+                const d = energySEU[s];
+                if (!d) return;
+                document.getElementById('seuModalTitle').innerText = s;
+                const cpu = energyCpu[s];
+                const dltToe = d.toe[6] > 0 ? ((d.toe[7]-d.toe[6])/d.toe[6]*100) : 0;
+                document.getElementById('seuModalStats').innerHTML = `
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Cost/Unit Agu</p><p class="font-bold">Rp ${cpu[7].toFixed(1)}</p></div>
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">TOE Agu</p><p class="font-bold">${d.toe[7]} TOE</p></div>
+                    <div class="bg-slate-50 rounded-lg p-2"><p class="text-gray-400 text-[9px] uppercase">Δ TOE Jul→Agu</p><p class="font-bold ${dltToe>0?'text-red-600':'text-green-600'}">${dltToe>0?'+':''}${dltToe.toFixed(0)}%</p></div>`;
+                const modal = document.getElementById('seuModal');
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+                if (seuModalChartInst) seuModalChartInst.destroy();
+                seuModalChartInst = new Chart(document.getElementById('seuModalChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Cost/Unit (Rp)', data: cpu, borderColor: '#7c3aed', borderWidth: 2, tension: 0.3, yAxisID: 'y', pointRadius: 3 },
+                            { label: 'TOE', data: d.toe, borderColor: '#ea580c', borderWidth: 2, tension: 0.3, yAxisID: 'y1', pointRadius: 3 }
+                        ]
                     },
-                    scales: {
-                        x: { title: { display: true, text: 'Bulan', font: { size: 10 } } },
-                        y: {
-                            title: { display: true, text: 'Total Energy Used (TOE)', font: { size: 10 } },
-                            grid: { color: '#f1f5f9' }
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
+                        scales: {
+                            y: { position: 'left', title: { display: true, text: 'Rp/unit', font: { size: 9 } } },
+                            y1: { position: 'right', title: { display: true, text: 'TOE', font: { size: 9 } }, grid: { drawOnChartArea: false } }
                         }
                     }
-                }
-            });
+                });
+            }
+            function closeSeuModal() {
+                const m = document.getElementById('seuModal');
+                m.classList.add('hidden'); m.classList.remove('flex');
+            }
 
-            // Output total vs TOE total (dual axis)
+            // Build SEU chips
+            (function initP4Controls() {
+                const chips = document.getElementById('seuChips');
+                if (chips) {
+                    chips.innerHTML = seuNames.map(s =>
+                        `<button type="button" data-seu-chip="${s}" class="px-2.5 py-1 text-[10px] font-bold rounded-full border transition-colors"
+                            style="background:${seuColors[s]}22;border-color:${seuColors[s]};color:${seuColors[s]}">${s}</button>`
+                    ).join('') +
+                    `<button type="button" id="seuAll" class="px-2 py-1 text-[10px] font-bold rounded-full border border-slate-300 text-slate-500">Semua</button>`;
+                    chips.addEventListener('click', (e) => {
+                        const btn = e.target.closest('[data-seu-chip]');
+                        if (btn) {
+                            const s = btn.dataset.seuChip;
+                            p4State.seu[s] = !p4State.seu[s];
+                            btn.style.opacity = p4State.seu[s] ? '1' : '0.35';
+                            renderP4Charts(); renderP4Table();
+                        }
+                        if (e.target.id === 'seuAll') {
+                            const allOn = seuNames.every(s => p4State.seu[s]);
+                            seuNames.forEach(s => p4State.seu[s] = !allOn);
+                            chips.querySelectorAll('[data-seu-chip]').forEach(b => { b.style.opacity = p4State.seu[b.dataset.seuChip] ? '1' : '0.35'; });
+                            renderP4Charts(); renderP4Table();
+                        }
+                    });
+                }
+                document.querySelectorAll('.p4-metric').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        p4State.metric = btn.dataset.metric;
+                        document.querySelectorAll('.p4-metric').forEach(b => {
+                            const on = b.dataset.metric === p4State.metric;
+                            b.className = on
+                                ? 'p4-metric px-2.5 py-1 text-[10px] font-bold rounded-lg bg-violet-600 text-white'
+                                : 'p4-metric px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-100 text-slate-600';
+                        });
+                        renderP4Charts();
+                    });
+                });
+                const hl = document.getElementById('p4Highlight');
+                if (hl) hl.addEventListener('change', () => { p4State.highlight = hl.checked; renderP4Charts(); renderP4Table(); });
+                document.getElementById('energyCpuBody')?.addEventListener('click', (e) => {
+                    const td = e.target.closest('[data-seu]');
+                    if (td) openSeuModal(td.dataset.seu);
+                });
+                document.getElementById('seuModalClose')?.addEventListener('click', closeSeuModal);
+                document.getElementById('seuModal')?.addEventListener('click', (e) => { if (e.target.id === 'seuModal') closeSeuModal(); });
+            })();
+
+            renderP4Charts();
+            renderP4Table();
+
+            // aliases for multi-year section
             const totalOutputByMonth = labels.map((_, i) => seuNames.reduce((s, n) => s + energySEU[n].output[i], 0));
             const totalToeByMonth = labels.map((_, i) => seuNames.reduce((s, n) => s + energySEU[n].toe[i], 0));
-
-            charts.outputVsToe = new Chart(document.getElementById('outputVsToeChart'), {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Total Output Produksi',
-                            data: totalOutputByMonth,
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                            borderWidth: 3,
-                            pointRadius: 5,
-                            pointBackgroundColor: '#10b981',
-                            tension: 0.3,
-                            yAxisID: 'y',
-                            fill: true
-                        },
-                        {
-                            label: 'Total TOE',
-                            data: totalToeByMonth,
-                            borderColor: '#7c3aed',
-                            backgroundColor: 'rgba(124, 58, 237, 0.08)',
-                            borderWidth: 3,
-                            pointRadius: 5,
-                            pointBackgroundColor: '#7c3aed',
-                            tension: 0.3,
-                            yAxisID: 'y1',
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => {
-                                    if (ctx.dataset.yAxisID === 'y') {
-                                        return 'Output: ' + (ctx.parsed.y / 1e6).toFixed(2) + ' Juta unit';
-                                    }
-                                    return 'TOE: ' + ctx.parsed.y + ' TOE';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            type: 'linear',
-                            position: 'left',
-                            title: { display: true, text: 'Output (unit)', font: { size: 10 } },
-                            ticks: {
-                                callback: (v) => (v / 1e6).toFixed(0) + 'M'
-                            },
-                            grid: { color: '#f1f5f9' }
-                        },
-                        y1: {
-                            type: 'linear',
-                            position: 'right',
-                            title: { display: true, text: 'TOE', font: { size: 10 } },
-                            grid: { drawOnChartArea: false }
-                        }
-                    }
-                }
-            });
-
 
             // ========== MULTI-YEAR 2024 / 2025 / 2026 ==========
             const labels12 = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
             const output2024 = [59027696,54612811,56516443,55563658,70485758,57598696,47828915,35853614,46373147,54896149,51383976,47629944];
             const output2025 = [45822487,51140860,47843677,51012645,53438063,52497592,57688489,45191777,55729943,61693970,44494071,46949252];
-            const output2026 = totalOutputByMonth.concat([null,null,null,null]); // Jan-Agu only
+            const output2026Full = totalOutputByMonth.concat([null,null,null,null]);
             const toe2024 = [682,567,592,486,572,505,501,423,445,530,447,475];
             const toe2025 = [448,504,435,522,484,468,550,483,452,490,452,560];
-            const toe2026 = totalToeByMonth.concat([null,null,null,null]);
+            const toe2026Full = totalToeByMonth.concat([null,null,null,null]);
             const intensity2024 = output2024.map((o,i) => o ? +(toe2024[i] / (o/1e6)).toFixed(2) : null);
             const intensity2025 = output2025.map((o,i) => o ? +(toe2025[i] / (o/1e6)).toFixed(2) : null);
             const intensity2026 = totalOutputByMonth.map((o,i) => o ? +(totalToeByMonth[i] / (o/1e6)).toFixed(2) : null);
-            // cost/unit 2026 only (8 months)
-            charts.multiOut = new Chart(document.getElementById('multiYearOutputChart'), {
-                type: 'line',
-                data: {
-                    labels: labels12,
-                    datasets: [
-                        { label: '2024', data: output2024, borderColor: '#94a3b8', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, tension: 0.3 },
-                        { label: '2025', data: output2025, borderColor: '#2563eb', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
-                        { label: '2026 (s/d Agu)', data: output2026, borderColor: '#10b981', backgroundColor: 'transparent', borderWidth: 3, pointRadius: 4, tension: 0.3 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
-                    scales: {
-                        y: {
-                            title: { display: true, text: 'Output (unit)', font: { size: 10 } },
-                            ticks: { callback: v => (v/1e6).toFixed(0) + 'M' },
-                            grid: { color: '#f1f5f9' }
-                        }
-                    }
-                }
-            });
-
-            charts.multiToe = new Chart(document.getElementById('multiYearToeChart'), {
-                type: 'line',
-                data: {
-                    labels: labels12,
-                    datasets: [
-                        { label: 'TOE 2024', data: toe2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 3, tension: 0.3 },
-                        { label: 'TOE 2025', data: toe2025, borderColor: '#2563eb', borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
-                        { label: 'TOE 2026 (s/d Agu)', data: toe2026, borderColor: '#7c3aed', borderWidth: 3, pointRadius: 4, tension: 0.3 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
-                    scales: {
-                        y: { title: { display: true, text: 'TOE', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
-                    }
-                }
-            });
-
             const costUnit2024 = [62.45,63.07,59.61,56.42,50.32,53.70,60.35,69.92,57.59,59.64,57.38,64.53];
             const costUnit2025 = [59.85,54.77,57.04,57.36,54.89,51.15,53.25,62.33,51.32,50.58,64.73,67.29];
-            const costUnit2026 = monthCpu; // Jan-Agu 2026
+            const costUnit2026 = monthCpu;
 
-            charts.multiInt = new Chart(document.getElementById('multiYearIntensityChart'), {
-                type: 'line',
-                data: {
-                    labels: labels12,
-                    datasets: [
-                        { label: 'TOE/Jt Unit 2024', data: intensity2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 2.5, tension: 0.3, yAxisID: 'y' },
-                        { label: 'TOE/Jt Unit 2025', data: intensity2025, borderColor: '#2563eb', borderWidth: 2, pointRadius: 2.5, tension: 0.3, yAxisID: 'y' },
-                        { label: 'TOE/Jt Unit 2026', data: intensity2026.concat([null,null,null,null]), borderColor: '#7c3aed', borderWidth: 2.5, pointRadius: 3, tension: 0.3, yAxisID: 'y' },
-                        { label: 'Cost/Unit 2024 (Rp)', data: costUnit2024, borderColor: '#64748b', borderWidth: 2, borderDash: [6,4], pointRadius: 2, tension: 0.3, yAxisID: 'y1' },
-                        { label: 'Cost/Unit 2025 (Rp)', data: costUnit2025, borderColor: '#0ea5e9', borderWidth: 2, borderDash: [6,4], pointRadius: 2, tension: 0.3, yAxisID: 'y1' },
-                        { label: 'Cost/Unit 2026 (Rp)', data: costUnit2026.concat([null,null,null,null]), borderColor: '#dc2626', borderWidth: 2.5, borderDash: [6,4], pointRadius: 3, tension: 0.3, yAxisID: 'y1' }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } }
-                    },
-                    scales: {
-                        y: {
-                            position: 'left',
-                            title: { display: true, text: 'TOE / Juta Unit', font: { size: 10 } },
-                            grid: { color: '#f1f5f9' }
-                        },
-                        y1: {
-                            position: 'right',
-                            title: { display: true, text: 'Rp / unit', font: { size: 10 } },
-                            grid: { drawOnChartArea: false }
-                        }
+            function yoyDatasets(kind) {
+                // kind: 'out' | 'toe' | 'int'
+                const mode = (document.getElementById('yoyMode') || {}).value || 'all';
+                const show24 = mode === 'all' || mode === '2425' || mode === '2426';
+                const show25 = mode === 'all' || mode === '2425' || mode === '2526';
+                const show26 = mode === 'all' || mode === '2526' || mode === '2426';
+                const ds = [];
+                if (kind === 'out') {
+                    if (show24) ds.push({ label: '2024', data: output2024, borderColor: '#94a3b8', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, tension: 0.3 });
+                    if (show25) ds.push({ label: '2025', data: output2025, borderColor: '#2563eb', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 3, tension: 0.3 });
+                    if (show26) ds.push({ label: '2026 (s/d Agu)', data: output2026Full, borderColor: '#10b981', backgroundColor: 'transparent', borderWidth: 3, pointRadius: 4, tension: 0.3 });
+                } else if (kind === 'toe') {
+                    if (show24) ds.push({ label: 'TOE 2024', data: toe2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 3, tension: 0.3 });
+                    if (show25) ds.push({ label: 'TOE 2025', data: toe2025, borderColor: '#2563eb', borderWidth: 2.5, pointRadius: 3, tension: 0.3 });
+                    if (show26) ds.push({ label: 'TOE 2026 (s/d Agu)', data: toe2026Full, borderColor: '#7c3aed', borderWidth: 3, pointRadius: 4, tension: 0.3 });
+                } else {
+                    if (show24) {
+                        ds.push({ label: 'TOE/Jt Unit 2024', data: intensity2024, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 2.5, tension: 0.3, yAxisID: 'y' });
+                        ds.push({ label: 'Cost/Unit 2024 (Rp)', data: costUnit2024, borderColor: '#64748b', borderWidth: 2, borderDash: [6,4], pointRadius: 2, tension: 0.3, yAxisID: 'y1' });
+                    }
+                    if (show25) {
+                        ds.push({ label: 'TOE/Jt Unit 2025', data: intensity2025, borderColor: '#2563eb', borderWidth: 2, pointRadius: 2.5, tension: 0.3, yAxisID: 'y' });
+                        ds.push({ label: 'Cost/Unit 2025 (Rp)', data: costUnit2025, borderColor: '#0ea5e9', borderWidth: 2, borderDash: [6,4], pointRadius: 2, tension: 0.3, yAxisID: 'y1' });
+                    }
+                    if (show26) {
+                        ds.push({ label: 'TOE/Jt Unit 2026', data: intensity2026.concat([null,null,null,null]), borderColor: '#7c3aed', borderWidth: 2.5, pointRadius: 3, tension: 0.3, yAxisID: 'y' });
+                        ds.push({ label: 'Cost/Unit 2026 (Rp)', data: costUnit2026.concat([null,null,null,null]), borderColor: '#dc2626', borderWidth: 2.5, borderDash: [6,4], pointRadius: 3, tension: 0.3, yAxisID: 'y1' });
                     }
                 }
-            });
+                return ds;
+            }
 
+            function renderYoyCharts() {
+                if (charts.multiOut) charts.multiOut.destroy();
+                charts.multiOut = new Chart(document.getElementById('multiYearOutputChart'), {
+                    type: 'line',
+                    data: { labels: labels12, datasets: yoyDatasets('out') },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
+                        scales: {
+                            y: {
+                                title: { display: true, text: 'Output (unit)', font: { size: 10 } },
+                                ticks: { callback: v => (v/1e6).toFixed(0) + 'M' },
+                                grid: { color: '#f1f5f9' }
+                            }
+                        }
+                    }
+                });
+                if (charts.multiToe) charts.multiToe.destroy();
+                charts.multiToe = new Chart(document.getElementById('multiYearToeChart'), {
+                    type: 'line',
+                    data: { labels: labels12, datasets: yoyDatasets('toe') },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
+                        scales: {
+                            y: { title: { display: true, text: 'TOE', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+                if (charts.multiInt) charts.multiInt.destroy();
+                charts.multiInt = new Chart(document.getElementById('multiYearIntensityChart'), {
+                    type: 'line',
+                    data: { labels: labels12, datasets: yoyDatasets('int') },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } },
+                        scales: {
+                            y: { position: 'left', title: { display: true, text: 'TOE / Juta Unit', font: { size: 10 } }, grid: { color: '#f1f5f9' } },
+                            y1: { position: 'right', title: { display: true, text: 'Rp / unit', font: { size: 10 } }, grid: { drawOnChartArea: false } }
+                        }
+                    }
+                });
+            }
+            renderYoyCharts();
+            document.getElementById('yoyMode')?.addEventListener('change', renderYoyCharts);
 
             // ========== STEAM (Hal 5) ==========
             const steamLabels = ['Candy', 'Food → Gedung A & B', 'Gedung A', 'Natpro'];
@@ -1560,6 +2184,127 @@
                     }
                 }
             });
+
+
+            // ========== CARBON TAX (Hal 6) ==========
+            const CT_EF = 1.83; // tCO2e per ton coal (IPCC sub-bituminous approx)
+            const CT_RATE = 30000; // Rp per tCO2e
+            const coalKg = {
+                'Candy':    [86812,126320,86936,77912,104544,108064,104844,177259],
+                'Natpro':   [83400,121267,83459,74796,100362,103741,100650,170176],
+                'Pharma 1': [143524,196602,133468,123485,164943,169214,168534,284878],
+                'Pharma 2': [80017,128672,90392,77138,104258,109051,101440,171456],
+                'Pharma 3': [24307,35370,24342,21815,29272,30258,29356,49670]
+            };
+            const ctSeu = Object.keys(coalKg);
+            const ctColors = { 'Candy':'#db2777','Natpro':'#ea580c','Pharma 1':'#2563eb','Pharma 2':'#0891b2','Pharma 3':'#16a34a' };
+
+            const coalTonMonth = labels.map((_, i) => ctSeu.reduce((s, n) => s + coalKg[n][i] / 1000, 0));
+            const emitMonth = coalTonMonth.map(t => t * CT_EF);
+            const taxMonth = emitMonth.map(e => e * CT_RATE);
+            const totalCoal = coalTonMonth.reduce((a,b)=>a+b,0);
+            const totalEmit = emitMonth.reduce((a,b)=>a+b,0);
+            const totalTax = taxMonth.reduce((a,b)=>a+b,0);
+
+            document.getElementById('ctCoalTotal').innerText = totalCoal.toLocaleString('id-ID', { maximumFractionDigits: 0 }) + ' ton';
+            document.getElementById('ctEmitTotal').innerText = totalEmit.toLocaleString('id-ID', { maximumFractionDigits: 0 }) + ' t';
+            document.getElementById('ctTaxTotal').innerText = formatIDR(totalTax);
+            document.getElementById('ctTaxAug').innerText = formatIDR(taxMonth[7]);
+            const taxDiff = ((taxMonth[7] - taxMonth[6]) / taxMonth[6]) * 100;
+            const ctTr = document.getElementById('ctTaxAugTrend');
+            ctTr.innerText = (taxDiff >= 0 ? '+' : '') + taxDiff.toFixed(1) + '% vs Juli';
+            ctTr.className = 'text-xs font-bold mt-1 ' + (taxDiff > 0 ? 'text-red-600' : 'text-green-600');
+
+            // Table
+            const ctBody = document.getElementById('ctTableBody');
+            if (ctBody) {
+                ctSeu.forEach(s => {
+                    const tons = coalKg[s].map(v => v / 1000);
+                    const sumT = tons.reduce((a,b)=>a+b,0);
+                    const em = sumT * CT_EF;
+                    const tax = em * CT_RATE;
+                    let cells = `<td class="py-2 font-semibold text-gray-700">${s}</td>`;
+                    tons.forEach(t => { cells += `<td class="py-2 text-right">${t.toFixed(1)}</td>`; });
+                    cells += `<td class="py-2 text-right font-bold">${sumT.toFixed(1)}</td>`;
+                    cells += `<td class="py-2 text-right">${em.toFixed(1)}</td>`;
+                    cells += `<td class="py-2 text-right font-bold text-emerald-700">${formatIDR(tax)}</td>`;
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-gray-100 hover:bg-emerald-50/40';
+                    tr.innerHTML = cells;
+                    ctBody.appendChild(tr);
+                });
+                // total row
+                let totCells = `<td class="py-2 font-bold text-slate-800">TOTAL</td>`;
+                coalTonMonth.forEach(t => { totCells += `<td class="py-2 text-right font-bold">${t.toFixed(1)}</td>`; });
+                totCells += `<td class="py-2 text-right font-bold">${totalCoal.toFixed(1)}</td>`;
+                totCells += `<td class="py-2 text-right font-bold">${totalEmit.toFixed(1)}</td>`;
+                totCells += `<td class="py-2 text-right font-bold text-emerald-800">${formatIDR(totalTax)}</td>`;
+                const trT = document.createElement('tr');
+                trT.className = 'bg-emerald-50/80';
+                trT.innerHTML = totCells;
+                ctBody.appendChild(trT);
+            }
+
+            charts.ctCoal = new Chart(document.getElementById('ctCoalChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Batubara (ton)',
+                        data: coalTonMonth,
+                        backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { title: { display: true, text: 'Ton', font: { size: 10 } }, grid: { color: '#f1f5f9' } } }
+                }
+            });
+
+            charts.ctTax = new Chart(document.getElementById('ctTaxChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Carbon Tax (Rp Juta)',
+                        data: taxMonth.map(v => +(v/1e6).toFixed(1)),
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.12)',
+                        fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#059669', borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { title: { display: true, text: 'Rp Juta', font: { size: 10 } }, grid: { color: '#f1f5f9' } } }
+                }
+            });
+
+            // Stacked or grouped by SEU - total tax per SEU as bar
+            const taxBySeu = ctSeu.map(s => {
+                const sumT = coalKg[s].reduce((a,b)=>a+b,0) / 1000;
+                return +(sumT * CT_EF * CT_RATE / 1e6).toFixed(1);
+            });
+            charts.ctSeu = new Chart(document.getElementById('ctSeuChart'), {
+                type: 'bar',
+                data: {
+                    labels: ctSeu,
+                    datasets: [{
+                        label: 'Carbon Tax 8 bln (Rp Juta)',
+                        data: taxBySeu,
+                        backgroundColor: ctSeu.map(s => ctColors[s]),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { title: { display: true, text: 'Rp Juta', font: { size: 10 } }, grid: { color: '#f1f5f9' } } }
+                }
+            });
+
 
         });
     </script>
